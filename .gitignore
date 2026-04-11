@@ -1,0 +1,28 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Local environment files
+.env
+.env.*
+/config/*
+!/config/application-example.properties
+/data/
+
+# Logs
+*.log
+
+# OS / temp files
+Thumbs.db
+.DS_Store
+*.tmp
+*.temp
+*.swp
