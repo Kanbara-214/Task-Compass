@@ -32,32 +32,45 @@
 - Spring Security
 - Thymeleaf
 - MyBatis
-- PostgreSQL
+- H2 / PostgreSQL
 
 ## ローカル起動
 
-1. PostgreSQL にデータベースを作成します
+まずはそのまま起動できます。
 
-```sql
-create database task_compass;
-```
-
-2. 必要に応じて接続情報を環境変数で設定します
-
-```powershell
-$env:TASK_COMPASS_DB_URL="jdbc:postgresql://localhost:5432/task_compass"
-$env:TASK_COMPASS_DB_USERNAME="postgres"
-$env:TASK_COMPASS_DB_PASSWORD="postgres"
-```
-
-3. アプリを起動します
+1. Windows の `PowerShell` または `Windows Terminal` を開きます。
+2. このプロジェクトのフォルダで、次のコマンドを実行します。
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-起動時に `schema.sql` からテーブルを自動作成します。  
+このコマンドは、アプリを起動するためのものです。  
+デフォルトではインメモリ H2 を使うため、DB の事前準備なしで起動できます。  
+起動時に `schema.sql` からテーブルを自動作成し、デモアカウントも投入します。  
 ログイン画面は [http://localhost:8080/login](http://localhost:8080/login) です。
+
+## PostgreSQL を使う場合
+
+ポートフォリオ確認だけなら、この設定は不要です。  
+上の `.\mvnw.cmd spring-boot:run` だけで起動できます。
+
+データを保持したい場合や PostgreSQL を使いたい場合だけ、`config/application.properties` を作成してください。
+
+やることは、ひな型ファイルの [config/application-example.properties](./config/application-example.properties) をコピーして、
+ファイル名を `application.properties` に変えるだけです。
+
+Windows の `PowerShell` または `Windows Terminal` を使う場合は、次のコマンドでコピーできます。
+
+```powershell
+Copy-Item .\config\application-example.properties .\config\application.properties
+```
+
+このコマンドは、サンプル設定を自分用設定としてコピーするためのものです。
+
+コピー後に、`config/application.properties` の中の PostgreSQL 接続情報を自分の環境に合わせて編集してください。
+
+`config/application.properties` は `.gitignore` で除外しているため、ローカル設定やパスワードは公開されません。
 
 ## デモアカウント
 
