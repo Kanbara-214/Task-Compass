@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード | Task Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/task-compass.css}">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand-block">
+            <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
+            <p>転職活動のための優先度最適化ダッシュボード</p>
+        </div>
+        <nav class="topnav">
+            <a th:href="@{/dashboard}" class="active">ダッシュボード</a>
+            <a th:href="@{/tasks}">タスク一覧</a>
+            <a th:href="@{/tasks/new}">タスク追加</a>
+            <form method="post" th:action="@{/logout}" class="topnav-logout">
+                <button type="submit" class="link-button nav-button">ログアウト</button>
+            </form>
+        </nav>
+        <div class="account-box">
+            <span th:text="${currentUser.displayName}">Demo User</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-panel dashboard-hero">
+            <div>
+                <p class="eyebrow">Today First</p>
+                <h1>今日やるべきことが一目で分かる</h1>
+                <p class="hero-text">
+                    重要度、緊急度、締切、予想作業時間から優先度スコアを計算し、
+                    転職活動タスクを「今やるべき順」に並べます。
+                </p>
+            </div>
+            <a th:href="@{/tasks/new}" class="primary-button">タスクを追加</a>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Total Tasks</span>
+                <strong th:text="${dashboard.totalCount}">0</strong>
+                <small>登録済みのタスク総数</small>
+            </article>
+            <article class="stat-card">
+                <span>Open Tasks</span>
+                <strong th:text="${dashboard.openCount}">0</strong>
+                <small>未完了タスク</small>
+            </article>
+            <article class="stat-card">
+                <span>Completion Rate</span>
+                <strong th:text="${dashboard.completionRate + '%'}">0%</strong>
+                <small>完了率</small>
+            </article>
+            <article class="stat-card">
+                <span>Average Priority</span>
+                <strong th:text="${dashboard.averagePriority}">0</strong>
+                <small>未完了タスクの平均スコア</small>
+            </article>
+        </section>
+
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">Focus</p>
+                    <h2>今日やるべきタスク</h2>
+                </div>
+                <a th:href="@{/tasks}" class="text-link">一覧を見る</a>
+            </div>
+
+            <div class="task-grid" th:if="${!#lists.isEmpty(dashboard.todayFocus)}">
+                <article class="task-card focus" th:each="task : ${dashboard.todayFocus}">
+                    <div class="task-card-top">
+                        <span class="priority-pill" th:classappend="${task.priority.bandClass}"
+                            th:text="${task.priority.bandLabel + ' / ' + task.priority.score}">最優先 / 118</span>
+                        <span class="status-pill" th:classappend="${task.status.cssClass}" th:text="${task.status.label}">進行中</span>
+                    </div>
+                    <h3 th:text="${task.title}">職務経歴書を更新する</h3>
+                    <p class="task-copy" th:text="${task.priority.summary}"></p>
+                    <div class="meta-row">
+                        <span th:text="${'締切: ' + #temporals.format(task.dueDate, 'yyyy/MM/dd')}">締切</span>
+                        <span th:text="${'作業時間: ' + task.estimatedLabel}">1時間30分</span>
+                        <span th:text="${'カテゴリ: ' + task.category}">転職活動</span>
+                    </div>
+                    <a class="card-link" th:href="@{/tasks/{id}(id=${task.id})}">詳細を見る</a>
+                </article>
+            </div>
+
+            <div class="empty-box" th:if="${#lists.isEmpty(dashboard.todayFocus)}">
+                まだタスクがありません。最初のタスクを追加してみましょう。
+            </div>
+        </section>
+
+        <section class="split-grid">
+            <article class="section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="eyebrow">Overdue</p>
+                        <h2>期限切れタスク</h2>
+                    </div>
+                    <span class="count-badge" th:text="${#lists.size(dashboard.overdueTasks)}">0</span>
+                </div>
+                <div class="mini-list overdue-list" th:if="${!#lists.isEmpty(dashboard.overdueTasks)}">
+                    <a class="mini-item overdue-item" th:each="task : ${dashboard.overdueTasks}" th:href="@{/tasks/{id}(id=${task.id})}">
+                        <div>
+                            <strong th:text="${task.title}">模擬面接の準備をする</strong>
+                            <p th:text="${task.priority.summary}">締切を過ぎているため最優先です。</p>
+                        </div>
+                        <div class="mini-item-aside">
+                            <span class="count-badge overdue-score" th:text="${task.priority.score}">120</span>
+                            <span class="mini-item-hint">詳細を見る</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="empty-box" th:if="${#lists.isEmpty(dashboard.overdueTasks)}">
+                    期限切れタスクはありません。
+                </div>
+            </article>
+
+            <article class="section-card">
+                <div class="section-head">
+                    <div>
+                        <p class="eyebrow">This Week</p>
+                        <h2>今週締切のタスク</h2>
+                    </div>
+                    <span class="count-badge" th:text="${#lists.size(dashboard.dueThisWeek)}">0</span>
+                </div>
+                <div class="mini-list" th:if="${!#lists.isEmpty(dashboard.dueThisWeek)}">
+                    <a class="mini-item" th:each="task : ${dashboard.dueThisWeek}" th:href="@{/tasks/{id}(id=${task.id})}">
+                        <div>
+                            <strong th:text="${task.title}">企業研究をする</strong>
+                            <p th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd') + ' まで'}">2026/04/13 まで</p>
+                        </div>
+                        <span th:text="${task.priority.bandLabel}">高</span>
+                    </a>
+                </div>
+                <div class="empty-box" th:if="${#lists.isEmpty(dashboard.dueThisWeek)}">
+                    今週締切のタスクはありません。
+                </div>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

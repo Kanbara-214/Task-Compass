@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${formTitle + ' | Task Compass'}">タスクフォーム | Task Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/task-compass.css}">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand-block">
+            <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
+            <p>タスクを登録して優先度計算に載せる</p>
+        </div>
+        <nav class="topnav">
+            <a th:href="@{/dashboard}">ダッシュボード</a>
+            <a th:href="@{/tasks}" class="active">タスク一覧</a>
+            <a th:href="@{/tasks/new}">Create Task</a>
+            <form method="post" th:action="@{/logout}" class="topnav-logout">
+                <button type="submit" class="link-button nav-button">ログアウト</button>
+            </form>
+        </nav>
+        <div class="account-box">
+            <span th:text="${currentUser.displayName}">Demo User</span>
+        </div>
+    </header>
+
+    <main class="page-shell form-shell">
+        <section class="section-card">
+            <div class="section-head align-start">
+                <div>
+                    <p class="eyebrow">Task Editor</p>
+                    <h1 th:text="${formTitle}">タスクを追加</h1>
+                    <p class="section-copy">締切、重要度、緊急度、作業時間を登録すると優先度スコアが計算されます。</p>
+                </div>
+            </div>
+
+            <form method="post" th:action="${formAction}" th:object="${taskForm}" class="task-form-grid">
+                <label class="field field-span-2">
+                    <span>タスク名</span>
+                    <input type="text" th:field="*{title}" placeholder="例: 職務経歴書を更新する">
+                    <small class="error-text" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small>
+                </label>
+
+                <label class="field field-span-2">
+                    <span>説明</span>
+                    <textarea th:field="*{description}" rows="5"
+                        placeholder="何を終わらせるか、どこまで進めれば完了かを書いておくと判断しやすくなります。"></textarea>
+                    <small class="error-text" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                </label>
+
+                <label class="field">
+                    <span>締切</span>
+                    <input type="date" th:field="*{dueDate}">
+                    <small class="error-text" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></small>
+                </label>
+
+                <label class="field">
+                    <span>カテゴリ</span>
+                    <input type="text" th:field="*{category}" list="category-options" placeholder="転職活動">
+                    <datalist id="category-options">
+                        <option th:each="categoryOption : ${categories}" th:value="${categoryOption}"></option>
+                    </datalist>
+                    <small class="error-text" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></small>
+                </label>
+
+                <label class="field">
+                    <span>重要度</span>
+                    <select th:field="*{importance}">
+                        <option th:each="point : ${#numbers.sequence(1,5)}" th:value="${point}"
+                            th:text="${point + ' / 5'}"></option>
+                    </select>
+                    <small class="error-text" th:if="${#fields.hasErrors('importance')}" th:errors="*{importance}"></small>
+                </label>
+
+                <label class="field">
+                    <span>緊急度</span>
+                    <select th:field="*{urgency}">
+                        <option th:each="point : ${#numbers.sequence(1,5)}" th:value="${point}"
+                            th:text="${point + ' / 5'}"></option>
+                    </select>
+                    <small class="error-text" th:if="${#fields.hasErrors('urgency')}" th:errors="*{urgency}"></small>
+                </label>
+
+                <label class="field">
+                    <span>予想作業時間（分）</span>
+                    <input type="number" th:field="*{estimatedMinutes}" min="15" step="15" placeholder="90">
+                    <small class="error-text" th:if="${#fields.hasErrors('estimatedMinutes')}" th:errors="*{estimatedMinutes}"></small>
+                </label>
+
+                <label class="field">
+                    <span>ステータス</span>
+                    <select th:field="*{status}">
+                        <option th:each="statusOption : ${taskStatuses}" th:value="${statusOption}"
+                            th:text="${statusOption.label}"></option>
+                    </select>
+                    <small class="error-text" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></small>
+                </label>
+
+                <div class="form-actions">
+                    <button type="submit" class="primary-button">保存する</button>
+                    <a th:href="@{/tasks}" class="secondary-button">一覧へ戻る</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン | Task Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/task-compass.css}">
+</head>
+
+<body class="auth-body">
+    <main class="auth-shell">
+        <section class="auth-copy">
+            <p class="eyebrow">Priority Optimization for Career Tasks</p>
+            <h1>Task Compass</h1>
+            <p class="hero-text">
+                転職活動、学習、ポートフォリオ制作のタスクをまとめて管理し、
+                締切、重要度、緊急度、作業時間から「今やるべき順」を自動で提案します。
+            </p>
+
+            <div class="feature-list">
+                <article>
+                    <strong>おすすめ順</strong>
+                    <span>締切と重要度をもとに優先度スコアを算出</span>
+                </article>
+                <article>
+                    <strong>ダッシュボード</strong>
+                    <span>今日やるべきこと、期限切れ、今週締切を可視化</span>
+                </article>
+                <article>
+                    <strong>説明可能</strong>
+                    <span>なぜ上位なのか理由文まで表示</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="auth-panel">
+            <div class="panel-card">
+                <p class="panel-label">Sign In</p>
+                <h2>ログイン</h2>
+
+                <div class="flash success" th:if="${param.registered}">
+                    アカウントを作成しました。ログインしてください。
+                </div>
+                <div class="flash success" th:if="${param.logout}">
+                    ログアウトしました。
+                </div>
+                <div class="flash error" th:if="${param.error}">
+                    メールアドレスまたはパスワードが正しくありません。
+                </div>
+
+                <form method="post" th:action="@{/login}" class="stack-form">
+                    <label class="field">
+                        <span>メールアドレス</span>
+                        <input type="email" name="username" placeholder="demo@example.com" value="demo@example.com" required>
+                    </label>
+
+                    <label class="field">
+                        <span>パスワード</span>
+                        <input type="password" name="password" placeholder="password123" value="password123" required>
+                    </label>
+
+                    <button type="submit" class="primary-button full">ログインする</button>
+                </form>
+
+                <div class="auth-note">
+                    <strong>デモアカウント</strong>
+                    <span>`demo@example.com / password123`</span>
+                </div>
+
+                <p class="auth-link">
+                    アカウントがまだない場合は
+                    <a th:href="@{/register}">新規登録</a>
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

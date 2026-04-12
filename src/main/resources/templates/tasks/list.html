@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク一覧 | Task Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/task-compass.css}">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand-block">
+            <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
+            <p>タスクを一覧で確認しておすすめ順に見直す</p>
+        </div>
+        <nav class="topnav">
+            <a th:href="@{/dashboard}">ダッシュボード</a>
+            <a th:href="@{/tasks}" class="active">タスク一覧</a>
+            <a th:href="@{/tasks/new}">Create Task</a>
+            <form method="post" th:action="@{/logout}" class="topnav-logout">
+                <button type="submit" class="link-button nav-button">ログアウト</button>
+            </form>
+        </nav>
+        <div class="account-box">
+            <span th:text="${currentUser.displayName}">Demo User</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <section class="section-card filter-panel">
+            <div class="section-head compact-head">
+                <div>
+                    <p class="eyebrow">Task Table</p>
+                    <h1>タスク一覧</h1>
+                </div>
+                <a th:href="@{/tasks/new}" class="primary-button">新しいタスク</a>
+            </div>
+
+            <form method="get" th:action="@{/tasks}" class="filter-form compact-filter-form">
+                <label class="field">
+                    <span>カテゴリ</span>
+                    <select name="category">
+                        <option value="">すべて</option>
+                        <option th:each="categoryOption : ${categories}" th:value="${categoryOption}"
+                            th:selected="${categoryOption == query.category}" th:text="${categoryOption}"></option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>ステータス</span>
+                    <select name="status">
+                        <option value="">すべて</option>
+                        <option th:each="statusOption : ${taskStatuses}" th:value="${statusOption.name()}"
+                            th:selected="${query.status != null and statusOption == query.status}"
+                            th:text="${statusOption.label}"></option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>並び替え</span>
+                    <select name="sort">
+                        <option th:each="sortOption : ${taskSortOptions}" th:value="${sortOption.slug}"
+                            th:selected="${sortOption == query.sort}" th:text="${sortOption.label}"></option>
+                    </select>
+                </label>
+
+                <div class="filter-actions">
+                    <button type="submit" class="secondary-button compact-button">反映</button>
+                    <a th:href="@{/tasks}" class="text-link">リセット</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="section-card">
+            <div class="table-wrap" th:if="${!#lists.isEmpty(tasks)}">
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>タスク名</th>
+                            <th>締切</th>
+                            <th>重要度</th>
+                            <th>緊急度</th>
+                            <th>優先度スコア</th>
+                            <th>ステータス</th>
+                            <th>カテゴリ</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="task : ${tasks}">
+                            <td>
+                                <strong th:text="${task.title}">職務経歴書を更新する</strong>
+                                <p th:text="${task.priority.summary}">締切が近く重要度も高いため上位です。</p>
+                            </td>
+                            <td th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">2026/04/12</td>
+                            <td th:text="${task.importance}">5</td>
+                            <td th:text="${task.urgency}">5</td>
+                            <td>
+                                <span class="priority-pill small" th:classappend="${task.priority.bandClass}"
+                                    th:text="${task.priority.score}">118</span>
+                            </td>
+                            <td>
+                                <span class="status-pill" th:classappend="${task.status.cssClass}" th:text="${task.status.label}">進行中</span>
+                            </td>
+                            <td th:text="${task.category}">転職活動</td>
+                            <td class="action-cell">
+                                <a th:href="@{/tasks/{id}(id=${task.id})}">詳細</a>
+                                <a th:href="@{/tasks/{id}/edit(id=${task.id})}">編集</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-box" th:if="${#lists.isEmpty(tasks)}">
+                条件に合うタスクがありません。新しいタスクを追加してみましょう。
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク詳細 | Task Compass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/task-compass.css}">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand-block">
+            <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
+            <p>タスクの全情報と優先理由を確認する</p>
+        </div>
+        <nav class="topnav">
+            <a th:href="@{/dashboard}">ダッシュボード</a>
+            <a th:href="@{/tasks}" class="active">タスク一覧</a>
+            <a th:href="@{/tasks/new}">Create Task</a>
+            <form method="post" th:action="@{/logout}" class="topnav-logout">
+                <button type="submit" class="link-button nav-button">ログアウト</button>
+            </form>
+        </nav>
+        <div class="account-box">
+            <span th:text="${currentUser.displayName}">Demo User</span>
+        </div>
+    </header>
+
+    <main class="page-shell detail-shell">
+        <section class="section-card detail-main">
+            <div class="section-head align-start">
+                <div>
+                    <p class="eyebrow">Task Detail</p>
+                    <h1 th:text="${task.title}">職務経歴書を更新する</h1>
+                    <p class="section-copy" th:text="${task.description}">説明文</p>
+                </div>
+                <div class="detail-actions">
+                    <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="secondary-button">編集する</a>
+                    <form method="post" th:action="@{/tasks/{id}/delete(id=${task.id})}">
+                        <button type="submit" class="danger-button">削除する</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <article class="detail-card">
+                    <span class="label">締切</span>
+                    <strong th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">2026/04/12</strong>
+                </article>
+                <article class="detail-card">
+                    <span class="label">重要度 / 緊急度</span>
+                    <strong th:text="${task.importance + ' / ' + task.urgency}">5 / 5</strong>
+                </article>
+                <article class="detail-card">
+                    <span class="label">予想作業時間</span>
+                    <strong th:text="${task.estimatedLabel}">1時間30分</strong>
+                </article>
+                <article class="detail-card">
+                    <span class="label">ステータス</span>
+                    <strong th:text="${task.status.label}">進行中</strong>
+                </article>
+                <article class="detail-card">
+                    <span class="label">カテゴリ</span>
+                    <strong th:text="${task.category}">転職活動</strong>
+                </article>
+                <article class="detail-card">
+                    <span class="label">更新日時</span>
+                    <strong th:text="${#temporals.format(task.updatedAt, 'yyyy/MM/dd HH:mm')}">2026/04/11 21:00</strong>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-card priority-panel">
+            <div class="section-head align-start">
+                <div>
+                    <p class="eyebrow">Priority Insight</p>
+                    <h2>優先度が高い理由</h2>
+                </div>
+                <span class="priority-pill" th:classappend="${task.priority.bandClass}"
+                    th:text="${task.priority.bandLabel + ' / ' + task.priority.score}">最優先 / 118</span>
+            </div>
+
+            <p class="priority-summary" th:text="${task.priority.summary}">
+                締切が近く、重要度が高いため上位表示されています。
+            </p>
+
+            <div class="reason-list vertical">
+                <div class="reason-chip" th:each="reason : ${task.priority.reasons}" th:text="${reason}">
+                    締切が近い
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
