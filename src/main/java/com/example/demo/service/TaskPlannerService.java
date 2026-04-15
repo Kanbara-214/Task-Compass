@@ -8,16 +8,16 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dto.TaskForm;
-import com.example.demo.dto.TaskListQuery;
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.TaskItem;
 import com.example.demo.entity.TaskStatus;
+import com.example.demo.form.TaskForm;
 import com.example.demo.mapper.TaskItemMapper;
 import com.example.demo.model.DashboardView;
 import com.example.demo.model.PriorityInsight;
 import com.example.demo.model.TaskSortOption;
 import com.example.demo.model.TaskView;
+import com.example.demo.query.TaskListQuery;
 
 @Service
 public class TaskPlannerService {
