@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
-import com.example.demo.dto.TaskForm;
-import com.example.demo.dto.TaskListQuery;
 import com.example.demo.entity.AppUser;
+import com.example.demo.form.TaskForm;
+import com.example.demo.query.TaskListQuery;
 import com.example.demo.security.AppUserPrincipal;
 import com.example.demo.service.AppUserService;
 import com.example.demo.service.TaskPlannerService;

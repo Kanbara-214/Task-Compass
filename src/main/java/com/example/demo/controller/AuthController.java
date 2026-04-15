@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
 
-import com.example.demo.dto.RegistrationForm;
+import com.example.demo.form.RegistrationForm;
 import com.example.demo.service.AppUserService;
 
 @Controller
