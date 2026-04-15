@@ -5,6 +5,19 @@
 
 日々のタスク管理で「何から手を付けるべきか」が分かりにくい、という課題を解決するために開発しました。
 
+### ダッシュボード画面
+
+<p>
+  <img src="./docs/images/Task-Compass-dashboard.png" alt="Task Compassのダッシュボード画面" width="900">
+</p>
+
+### タスク詳細画面
+
+<p>
+  <img src="./docs/images/Task-Compass-task-details.png" alt="Task Compassのタスク詳細画面" width="900">
+</p>
+
+
 ## できること
 
 - ユーザー登録 / ログイン
