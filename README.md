@@ -8,13 +8,13 @@
 ### ダッシュボード画面
 
 <p>
-  <img src="./docs/images/Task-Compass-dashboard.png" alt="Task Compassのダッシュボード画面" width="900">
+  <img src="./docs/images/task-compass-dashboard.png" alt="Task Compassのダッシュボード画面" width="900">
 </p>
 
 ### タスク詳細画面
 
 <p>
-  <img src="./docs/images/Task-Compass-task-details.png" alt="Task Compassのタスク詳細画面" width="900">
+  <img src="./docs/images/task-compass-task-details.png" alt="Task Compassのタスク詳細画面" width="900">
 </p>
 
 
