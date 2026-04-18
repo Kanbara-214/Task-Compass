@@ -81,7 +81,7 @@ Copy-Item .\config\application-example.properties .\config\application.propertie
 
 このコマンドは、サンプル設定を自分用設定としてコピーするためのものです。
 
-コピー後に、`config/application.properties` の中の PostgreSQL 接続情報を自分の環境に合わせて編集してください。
+コピー後に、`config/application.properties` の中の `TASK_COMPASS_DB_URL` `TASK_COMPASS_DB_USERNAME` `TASK_COMPASS_DB_PASSWORD` を、自分の PostgreSQL 環境に合わせて編集してください。
 
 `config/application.properties` は `.gitignore` で除外しているため、ローカル設定やパスワードは公開されません。
 
