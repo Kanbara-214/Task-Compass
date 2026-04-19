@@ -1,0 +1,13 @@
+package com.kanbara.taskcompass;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class TaskCompassApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(TaskCompassApplication.class, args);
+	}
+
+}
