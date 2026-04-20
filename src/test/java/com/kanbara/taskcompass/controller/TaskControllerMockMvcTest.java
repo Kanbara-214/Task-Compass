@@ -1,5 +1,6 @@
 package com.kanbara.taskcompass.controller;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,7 +14,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,7 +42,7 @@ class TaskControllerMockMvcTest {
 	TaskItemMapper taskItemMapper;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private PasswordEncoder passwordEncoder;
 
 	@ParameterizedTest(name = "[{index}] unauthenticated GET {0} redirects to /login")
 	@ValueSource(strings = {
@@ -107,6 +107,63 @@ class TaskControllerMockMvcTest {
 				.andExpect(view().name("tasks/form"))
 				.andExpect(model().attributeExists("currentUser", "taskForm", "categories", "formTitle",
 						"formAction", "taskId"));
+
+	}
+
+	@Test
+	void authenticatedUserSubmittingInvalidTaskReturnsCreateFormWithErrors() throws Exception {
+		AppUser user = createUser();
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+
+		mockMvc.perform(post("/tasks")
+				.with(user(principal))
+				.with(csrf())
+				.param("title", "") // NotBlank違反
+				.param("description", "validation test")
+				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("importance", "3")
+				.param("urgency", "3")
+				.param("estimatedMinutes", "60")
+				.param("status", "TODO")
+				.param("category", "学習"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("tasks/form"))
+				.andExpect(model().attributeExists(
+						"taskForm", "currentUser", "categories", "formTitle", "formAction"))
+				.andExpect(model().attributeHasFieldErrors("taskForm", "title"));
+
+		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		assertEquals(before, after, "Task should not be created");
+	}
+
+	@Test
+	void authenticatedUserSubmittingInvalidTaskReturnsEditFormWithErrors() throws Exception {
+		AppUser user = createUser();
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		Long taskId = createTaskItemForTests(user.getId());
+		TaskItem before = taskItemMapper.findByIdAndOwnerId(taskId, user.getId());
+
+		mockMvc.perform(post("/tasks/" + taskId)
+				.with(user(principal))
+				.with(csrf())
+				.param("title", "") // NotBlank違反
+				.param("description", "validation test")
+				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("importance", "3")
+				.param("urgency", "3")
+				.param("estimatedMinutes", "60")
+				.param("status", "TODO")
+				.param("category", "学習"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("tasks/form"))
+				.andExpect(model().attributeExists(
+						"taskForm", "currentUser", "categories", "formTitle", "formAction", "taskId"))
+				.andExpect(model().attributeHasFieldErrors("taskForm", "title"));
+
+		TaskItem after = taskItemMapper.findByIdAndOwnerId(taskId, user.getId());
+		assertEquals(before.getTitle(), after.getTitle(), "Task title should remain unchanged");
+		assertEquals(before.getUpdatedAt(), after.getUpdatedAt(), "Task updatedAt should remain unchanged");
 
 	}
 
