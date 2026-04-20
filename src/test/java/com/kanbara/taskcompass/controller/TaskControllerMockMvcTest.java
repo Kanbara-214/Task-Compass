@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,9 +37,15 @@ class TaskControllerMockMvcTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	@Test
-	void unauthenticatedUserIsRedirectedToLoginWhenAccessingTasks() throws Exception {
-		mockMvc.perform(get("/tasks"))
+	@ParameterizedTest(name = "[{index}] unauthenticated GET {0} redirects to /login")
+	@ValueSource(strings = {
+	        "/tasks",
+	        "/tasks/new",
+	        "/tasks/1",
+	        "/tasks/1/edit"
+	})
+	void unauthenticatedUserIsRedirectedToLoginWhenAccessingTasks(String path) throws Exception {
+		mockMvc.perform(get(path))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrlPattern("**/login"));
 	}
