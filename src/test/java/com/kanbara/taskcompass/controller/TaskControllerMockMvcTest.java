@@ -59,7 +59,7 @@ class TaskControllerMockMvcTest {
 
 	@Test
 	void authenticatedUserCanAccessTaskList() throws Exception {
-		AppUser user = createUser();
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 
 		mockMvc.perform(get("/tasks")
@@ -71,7 +71,7 @@ class TaskControllerMockMvcTest {
 
 	@Test
 	void authenticatedUserCanAccessTasksCreateForm() throws Exception {
-		AppUser user = createUser();
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 
 		mockMvc.perform(get("/tasks/new")
@@ -85,9 +85,10 @@ class TaskControllerMockMvcTest {
 
 	@Test
 	void authenticatedUserCanAccessTasksDetail() throws Exception {
-		AppUser user = createUser();
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
+
 		mockMvc.perform(get("/tasks/" + taskId)
 				.with(user(principal)))
 				.andExpect(status().isOk())
@@ -97,10 +98,34 @@ class TaskControllerMockMvcTest {
 	}
 
 	@Test
-	void authenticatedUserCanAccessTasksEditForm() throws Exception {
-		AppUser user = createUser();
+	void authenticatedUserCannotAccessOthersTasksDetail() throws Exception {
+		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user1);
+		Long taskId = createTaskItemForTests(user2.getId());
+
+		mockMvc.perform(get("/tasks/" + taskId)
+				.with(user(principal)))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void authenticatedUserCannotAccessNonexistentTaskDetail() throws Exception {
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
+		Long nonexistentTaskId = taskId + 1; // 存在しないID
+
+		mockMvc.perform(get("/tasks/" + nonexistentTaskId)
+				.with(user(principal)))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void authenticatedUserCanAccessTasksEditForm() throws Exception {
+		AppUser user = createUser("Alice", "alice@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		Long taskId = createTaskItemForTests(user.getId());
+
 		mockMvc.perform(get("/tasks/" + taskId + "/edit")
 				.with(user(principal)))
 				.andExpect(status().isOk())
@@ -111,8 +136,31 @@ class TaskControllerMockMvcTest {
 	}
 
 	@Test
+	void authenticatedUserCannotAccessOthersTasksEditForm() throws Exception {
+		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user1);
+		Long taskId = createTaskItemForTests(user2.getId());
+
+		mockMvc.perform(get("/tasks/" + taskId + "/edit")
+				.with(user(principal)))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void authenticatedUserCannotAccessNonexistentTaskEditForm() throws Exception {
+		AppUser user = createUser("Alice", "alice@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		Long taskId = createTaskItemForTests(user.getId());
+		Long nonexistentTaskId = taskId + 1; // 存在しないID
+
+		mockMvc.perform(get("/tasks/" + nonexistentTaskId + "/edit")
+				.with(user(principal)))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
 	void authenticatedUserSubmittingInvalidTaskReturnsCreateFormWithErrors() throws Exception {
-		AppUser user = createUser();
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
 
@@ -139,7 +187,7 @@ class TaskControllerMockMvcTest {
 
 	@Test
 	void authenticatedUserSubmittingInvalidTaskReturnsEditFormWithErrors() throws Exception {
-		AppUser user = createUser();
+		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
 		TaskItem before = taskItemMapper.findByIdAndOwnerId(taskId, user.getId());
@@ -167,10 +215,10 @@ class TaskControllerMockMvcTest {
 
 	}
 
-	private AppUser createUser() {
+	private AppUser createUser(String displayName, String email) {
 		AppUser user = new AppUser();
-		user.setDisplayName("Alice");
-		user.setEmail("alice@example.com");
+		user.setDisplayName(displayName);
+		user.setEmail(email);
 		user.setPasswordHash(passwordEncoder.encode("password123"));
 		user.setCreatedAt(LocalDateTime.now());
 		appUserMapper.insert(user);
