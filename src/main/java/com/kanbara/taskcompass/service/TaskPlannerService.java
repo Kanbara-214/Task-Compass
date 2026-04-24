@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kanbara.taskcompass.entity.AppUser;
 import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.entity.TaskStatus;
+import com.kanbara.taskcompass.exception.TaskNotFoundException;
 import com.kanbara.taskcompass.form.TaskForm;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 import com.kanbara.taskcompass.model.DashboardView;
@@ -145,7 +146,7 @@ public class TaskPlannerService {
     private TaskItem requireTask(Long ownerId, Long taskId) {
         TaskItem task = taskItemMapper.findByIdAndOwnerId(taskId, ownerId);
         if (task == null) {
-            throw new IllegalArgumentException("タスクが見つかりません");
+            throw new TaskNotFoundException("タスクが見つかりません");
         }
         return task;
     }
