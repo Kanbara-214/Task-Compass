@@ -121,6 +121,56 @@ class TaskControllerMockMvcTest {
 	}
 
 	@Test
+	void authenticatedUserCannotUpdateOthersTasks() throws Exception {
+		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user1);
+		Long taskId = createTaskItemForTests(user2.getId());
+		TaskItem before = taskItemMapper.findByIdAndOwnerId(taskId, user2.getId());
+
+		mockMvc.perform(post("/tasks/" + taskId)
+				.with(user(principal))
+				.with(csrf())
+				.param("title", "task updated by Alice")
+				.param("description", "validation test")
+				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("importance", "3")
+				.param("urgency", "3")
+				.param("estimatedMinutes", "60")
+				.param("status", "TODO")
+				.param("category", "学習"))
+				.andExpect(status().isNotFound());
+
+		TaskItem after = taskItemMapper.findByIdAndOwnerId(taskId, user2.getId());
+		assertEquals(before.getTitle(), after.getTitle(), "Task title should not be updated");
+		assertEquals(before.getUpdatedAt(), after.getUpdatedAt(), "Task updatedAt should not be updated");
+	}
+
+	@Test
+	void authenticatedUserCannotUpdateNonexistentTask() throws Exception {
+		AppUser user = createUser("Alice", "alice@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		Long taskId = createTaskItemForTests(user.getId());
+		Long nonexistentTaskId = taskId + 1; // 存在しないID
+		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+
+		mockMvc.perform(post("/tasks/" + nonexistentTaskId)
+				.with(user(principal))
+				.with(csrf())
+				.param("title", "task updated by Alice")
+				.param("description", "validation test")
+				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("importance", "3")
+				.param("urgency", "3")
+				.param("estimatedMinutes", "60")
+				.param("status", "TODO")
+				.param("category", "学習"))
+				.andExpect(status().isNotFound());
+
+		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		assertEquals(before, after, "Task should not be updated");
+	}
+
+	@Test
 	void authenticatedUserCanAccessTasksEditForm() throws Exception {
 		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
@@ -156,6 +206,39 @@ class TaskControllerMockMvcTest {
 		mockMvc.perform(get("/tasks/" + nonexistentTaskId + "/edit")
 				.with(user(principal)))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void authenticatedUserCannotDeleteOthersTask() throws Exception {
+		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user1);
+		Long taskId = createTaskItemForTests(user2.getId());
+		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user2.getId()).size();
+
+		mockMvc.perform(post("/tasks/" + taskId + "/delete")
+				.with(user(principal))
+				.with(csrf()))
+				.andExpect(status().isNotFound());
+
+		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user2.getId()).size();
+		assertEquals(before, after, "Task should not be deleted");
+	}
+
+	@Test
+	void authenticatedUserCannotDeleteNonexistentTask() throws Exception {
+		AppUser user = createUser("Alice", "alice@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		Long taskId = createTaskItemForTests(user.getId());
+		Long nonexistentTaskId = taskId + 1; // 存在しないID
+		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+
+		mockMvc.perform(post("/tasks/" + nonexistentTaskId + "/delete")
+				.with(user(principal))
+				.with(csrf()))
+				.andExpect(status().isNotFound());
+
+		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		assertEquals(before, after, "Task should not be deleted");
 	}
 
 	@Test
