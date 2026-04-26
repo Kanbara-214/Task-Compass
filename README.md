@@ -1,98 +1,120 @@
 # Task Compass
 
-`Task Compass` は、転職活動や学習、ポートフォリオ制作のタスクを優先度付きで整理する Web アプリです。  
-単なる ToDo の CRUD ではなく、`重要度` `緊急度` `締切` `予想作業時間` から `priorityScore` を計算し、「今やるべき順」でタスクを表示します。
+Task Compass は、転職活動・学習・ポートフォリオ制作などのタスクを、優先度付きで整理する Web アプリケーションです。
 
-日々のタスク管理で「何から手を付けるべきか」が分かりにくい、という課題を解決するために開発しました。
+単なる ToDo 管理ではなく、`重要度`、`緊急度`、`締切`、`予想作業時間`、`ステータス` をもとに優先度スコアを算出し、ユーザーが「今どのタスクから着手すべきか」を判断しやすくすることを目的にしています。
 
-### ダッシュボード画面
+## 概要
+
+タスクを登録すると、ダッシュボードで「今日やるべきタスク」「期限切れタスク」「今週締切のタスク」を確認できます。
+
+各タスクには優先度スコアと理由文を表示し、なぜそのタスクを優先すべきかを画面上で確認できるようにしています。
+
+## 制作背景
+
+転職活動では、応募書類の更新、企業研究、面接準備、学習、ポートフォリオ改善など、性質の異なるタスクが同時に発生します。
+
+通常の ToDo リストではタスクを登録することはできますが、次に何を優先すべきかはユーザー自身が毎回判断する必要があります。
+
+そこで Task Compass では、タスクの属性から優先度を計算し、着手順を判断しやすくすることを目指しました。
+
+初期実装では AI 支援を利用していますが、認証・認可、ユーザー単位のデータ分離、404 ハンドリング、テスト追加、設計ドキュメント整備は、コードを確認しながら改善しました。
+
+## 画面イメージ
+
+**ダッシュボード**
 
 <p>
-  <img src="./docs/images/task-compass-dashboard.png" alt="Task Compassのダッシュボード画面" width="900">
+  <img src="./docs/images/task-compass-dashboard.png" alt="Task Compass のダッシュボード画面" width="900">
 </p>
 
-### タスク詳細画面
+---
+
+**タスク詳細**
 
 <p>
-  <img src="./docs/images/task-compass-task-details.png" alt="Task Compassのタスク詳細画面" width="900">
+  <img src="./docs/images/task-compass-task-details.png" alt="Task Compass のタスク詳細画面" width="900">
 </p>
 
-
-## できること
+## 主な機能
 
 - ユーザー登録 / ログイン
 - ログインユーザーごとのタスク管理
 - タスクの作成 / 一覧 / 詳細 / 編集 / 削除
-- ステータス、カテゴリ、並び替えでの絞り込み
-- ダッシュボードでの `今日やるべきタスク` `期限切れタスク` `今週締切タスク` の可視化
-- 優先度スコアと「なぜ上位なのか」の説明表示
-
-## 優先度スコアの考え方
-
-次の要素をもとにスコアを計算しています。
-
-- 重要度が高いほど加点
-- 緊急度が高いほど加点
-- 締切が近いほど加点
-- 期限切れは強く加点
-- 作業時間が長いタスクは早めに着手を促すため加点
-- 進行中タスクは少し優先
-- 完了済みタスクはおすすめ対象外
+- ステータス、カテゴリ、並び替えによる絞り込み
+- ダッシュボードでのタスク可視化
+- 優先度スコアの算出
+- 優先度が高い理由の表示
+- 他ユーザーのタスクにアクセスできないようにする制御
+- 存在しないタスクや権限のないタスクへのアクセス時の 404 応答
+- GitHub Actions による自動テスト
 
 ## 技術構成
 
+- Java 21
 - Spring Boot
 - Spring Security
 - Thymeleaf
 - MyBatis
-- H2 / PostgreSQL
+- H2
+- PostgreSQL
+- JUnit 5
+- MockMvc
+- GitHub Actions
+
+詳細は [技術概要](./docs/technical-overview.md) にまとめています。
+
+## 関連ドキュメント
+
+- [技術概要](./docs/technical-overview.md): 技術選定理由、AI 生成後に見直した点、設計判断、悩んだ点、捨てた選択肢、現在の限界をまとめています。
+- [優先度スコア設計](./docs/priority-scoring.md): 優先度スコアの計算方針、評価軸、現在の制約をまとめています。
 
 ## ローカル起動
 
-まずはそのまま起動できます。
-
-1. Windows の `PowerShell` または `Windows Terminal` を開きます。
-2. このプロジェクトのフォルダで、次のコマンドを実行します。
+デフォルトでは H2 のインメモリ DB を使用するため、DB を事前に用意しなくても起動できます。
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-このコマンドは、アプリを起動するためのものです。  
-デフォルトではインメモリ H2 を使うため、DB の事前準備なしで起動できます。  
-起動時に `schema.sql` からテーブルを自動作成し、デモアカウントも投入します。  
-ログイン画面は [http://localhost:8080/login](http://localhost:8080/login) です。
+起動後、以下にアクセスします。
+
+[http://localhost:8080/login](http://localhost:8080/login)
+
+## デモアカウント
+
+初回起動時にデモユーザーとサンプルタスクを自動作成します。
+
+- メールアドレス: `demo@example.com`
+- パスワード: `password123`
+
+## テスト
+
+以下のコマンドでテストを実行できます。
+
+```powershell
+.\mvnw.cmd test
+```
 
 ## PostgreSQL を使う場合
 
-ポートフォリオ確認だけなら、この設定は不要です。  
-上の `.\mvnw.cmd spring-boot:run` だけで起動できます。
-
-データを保持したい場合や PostgreSQL を使いたい場合だけ、`config/application.properties` を作成してください。
-
-やることは、ひな型ファイルの [config/application-example.properties](./config/application-example.properties) をコピーして、
-ファイル名を `application.properties` に変えるだけです。
-
-Windows の `PowerShell` または `Windows Terminal` を使う場合は、次のコマンドでコピーできます。
+データを永続化したい場合は、`config/application-example.properties` をコピーして `config/application.properties` を作成します。
 
 ```powershell
 Copy-Item .\config\application-example.properties .\config\application.properties
 ```
 
-このコマンドは、サンプル設定を自分用設定としてコピーするためのものです。
+作成後、以下の値を自分の PostgreSQL 環境に合わせて編集します。
 
-コピー後に、`config/application.properties` の中の `TASK_COMPASS_DB_URL` `TASK_COMPASS_DB_USERNAME` `TASK_COMPASS_DB_PASSWORD` を、自分の PostgreSQL 環境に合わせて編集してください。
+- `TASK_COMPASS_DB_URL`
+- `TASK_COMPASS_DB_USERNAME`
+- `TASK_COMPASS_DB_PASSWORD`
 
-`config/application.properties` は `.gitignore` で除外しているため、ローカル設定やパスワードは公開されません。
+`config/application.properties` は `.gitignore` に含めているため、ローカル設定やパスワードは Git 管理されません。
 
-## デモアカウント
+## 今後の改善予定
 
-- メールアドレス: `demo@example.com`
-- パスワード: `password123`
-
-初回起動時のみ、サンプルタスクを含むデモユーザーを自動投入します。
-
-## 開発メモ
-初期実装はAI支援で作成しています。
-
-今後は要件整理、レビュー、修正、README整備を実施し、コード理解を深めながら改善していく予定です。
+- タスク一覧の絞り込み・並び替えを DB 側で行う
+- 優先度スコアの重みづけを設定可能にする
+- ページネーションを追加する
+- デプロイ環境を用意し、ブラウザから確認できるようにする
