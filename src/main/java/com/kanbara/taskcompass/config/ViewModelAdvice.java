@@ -9,18 +9,18 @@ import com.kanbara.taskcompass.model.TaskSortOption;
 @ControllerAdvice
 public class ViewModelAdvice {
 
-    @ModelAttribute("appName")
-    public String appName() {
-        return "Task Compass";
-    }
+	@ModelAttribute("appName")
+	public String appName() {
+		return "Task Compass";
+	}
 
-    @ModelAttribute("taskStatuses")
-    public TaskStatus[] taskStatuses() {
-        return TaskStatus.values();
-    }
+	@ModelAttribute("taskStatuses")
+	public TaskStatus[] taskStatuses() {
+		return TaskStatus.values();
+	}
 
-    @ModelAttribute("taskSortOptions")
-    public TaskSortOption[] taskSortOptions() {
-        return TaskSortOption.values();
-    }
+	@ModelAttribute("taskSortOptions")
+	public TaskSortOption[] taskSortOptions() {
+		return TaskSortOption.values();
+	}
 }
