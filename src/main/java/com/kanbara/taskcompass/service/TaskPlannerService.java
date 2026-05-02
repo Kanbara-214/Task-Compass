@@ -71,12 +71,21 @@ public class TaskPlannerService {
 
     @Transactional(readOnly = true)
     public List<TaskView> listTasks(AppUser owner, TaskListQuery query) {
-        return taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(owner.getId()).stream()
+        List<TaskView> tasks = taskItemMapper.findByOwnerIdAndListQuery(
+                owner.getId(),
+                query.status(),
+                query.category(),
+                query.sort()).stream()
                 .map(this::toView)
-                .filter(task -> query.status() == null || task.status() == query.status())
-                .filter(task -> !query.hasCategory() || task.category().equalsIgnoreCase(query.category()))
-                .sorted(comparatorFor(query.sort()))
                 .toList();
+
+        if (query.sort() == TaskSortOption.RECOMMENDED) {
+            return tasks.stream()
+                    .sorted(recommendedComparator())
+                    .toList();
+        }
+
+        return tasks;
     }
 
     @Transactional(readOnly = true)
@@ -167,18 +176,6 @@ public class TaskPlannerService {
                 task.getCreatedAt(),
                 task.getUpdatedAt(),
                 priority);
-    }
-
-    private Comparator<TaskView> comparatorFor(TaskSortOption sortOption) {
-        return switch (sortOption) {
-            case DEADLINE -> Comparator.comparing(TaskView::dueDate)
-                    .thenComparing(task -> -task.priority().score());
-            case PRIORITY -> Comparator.comparingInt(TaskView::importance).reversed()
-                    .thenComparing(Comparator.comparingInt(TaskView::urgency).reversed())
-                    .thenComparing(TaskView::dueDate);
-            case UPDATED -> Comparator.comparing(TaskView::updatedAt).reversed();
-            case RECOMMENDED -> recommendedComparator();
-        };
     }
 
     private Comparator<TaskView> recommendedComparator() {
