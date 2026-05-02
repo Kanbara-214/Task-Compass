@@ -36,13 +36,13 @@ class TaskItemMapperTest {
     void findByOwnerIdAndListQueryFiltersByOwnerStatusAndCategory() {
         AppUser owner = createUser("Alice", "alice-filter@example.com");
         AppUser otherOwner = createUser("Jack", "jack-filter@example.com");
-        TaskItem expected = createTask(owner.getId(), "Expected", TaskStatus.TODO, "Test",
+        TaskItem expected = createTask(owner.getId(), "Test", TaskStatus.TODO, "Expected",
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
-        createTask(owner.getId(), "Different status", TaskStatus.DONE, "Test",
+        createTask(owner.getId(), "Test", TaskStatus.DONE, "Different status",
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(1));
-        createTask(owner.getId(), "Different category", TaskStatus.TODO, "Other",
+        createTask(owner.getId(), "Other", TaskStatus.TODO, "Different category",
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
-        createTask(otherOwner.getId(), "Other owner", TaskStatus.TODO, "Test",
+        createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
         TaskListQuery query = TaskListQuery.of("Test", "TODO", "recommended");
 
@@ -57,9 +57,9 @@ class TaskItemMapperTest {
     @Test
     void findByOwnerIdAndListQuerySortsByDeadline() {
         AppUser owner = createUser("Alice", "alice-deadline@example.com");
-        TaskItem later = createTask(owner.getId(), "Later", TaskStatus.TODO, "Test",
+        TaskItem later = createTask(owner.getId(), "Test", TaskStatus.TODO, "Later",
                 LocalDate.now().plusDays(5), 5, 5, LocalDateTime.now());
-        TaskItem earlier = createTask(owner.getId(), "Earlier", TaskStatus.TODO, "Test",
+        TaskItem earlier = createTask(owner.getId(), "Test", TaskStatus.TODO, "Earlier",
                 LocalDate.now().plusDays(1), 1, 1, LocalDateTime.now().minusMinutes(1));
         TaskListQuery query = TaskListQuery.of("", "TODO", "deadline");
 
@@ -74,9 +74,9 @@ class TaskItemMapperTest {
     @Test
     void findByOwnerIdAndListQuerySortsByPriority() {
         AppUser owner = createUser("Alice", "alice-priority@example.com");
-        TaskItem lowPriority = createTask(owner.getId(), "Low priority", TaskStatus.TODO, "Test",
+        TaskItem lowPriority = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low priority",
                 LocalDate.now().plusDays(1), 2, 5, LocalDateTime.now());
-        TaskItem highPriority = createTask(owner.getId(), "High priority", TaskStatus.TODO, "Test",
+        TaskItem highPriority = createTask(owner.getId(), "Test", TaskStatus.TODO, "High priority",
                 LocalDate.now().plusDays(3), 5, 1, LocalDateTime.now().minusMinutes(1));
         TaskListQuery query = TaskListQuery.of("", "TODO", "priority");
 
@@ -91,9 +91,9 @@ class TaskItemMapperTest {
     @Test
     void findByOwnerIdAndListQuerySortsByUpdatedAt() {
         AppUser owner = createUser("Alice", "alice-updated@example.com");
-        TaskItem oldTask = createTask(owner.getId(), "Old", TaskStatus.TODO, "Test",
+        TaskItem oldTask = createTask(owner.getId(), "Test", TaskStatus.TODO, "Old",
                 LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusDays(1));
-        TaskItem newTask = createTask(owner.getId(), "New", TaskStatus.TODO, "Test",
+        TaskItem newTask = createTask(owner.getId(), "Test", TaskStatus.TODO, "New",
                 LocalDate.now().plusDays(2), 1, 1, LocalDateTime.now());
         TaskListQuery query = TaskListQuery.of("", "TODO", "updatedAt");
 
@@ -117,9 +117,9 @@ class TaskItemMapperTest {
 
     private TaskItem createTask(
             Long ownerId,
-            String title,
-            TaskStatus status,
             String category,
+            TaskStatus status,
+            String title,
             LocalDate dueDate,
             int importance,
             int urgency,
