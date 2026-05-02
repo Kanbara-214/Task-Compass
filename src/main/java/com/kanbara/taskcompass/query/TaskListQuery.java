@@ -17,6 +17,13 @@ public record TaskListQuery(
         return new TaskListQuery(normalizedCategory, normalizedStatus, normalizedSort);
     }
 
+    public static TaskListQuery all(TaskSortOption sort) {
+        if (sort == null) {
+            return new TaskListQuery("", null, TaskSortOption.RECOMMENDED);
+        }
+        return new TaskListQuery("", null, sort);
+    }
+
     public boolean hasCategory() {
         return !category.isBlank();
     }

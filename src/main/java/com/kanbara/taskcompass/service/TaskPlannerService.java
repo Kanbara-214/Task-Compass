@@ -33,7 +33,10 @@ public class TaskPlannerService {
 
     @Transactional(readOnly = true)
     public DashboardView buildDashboard(AppUser owner) {
-        List<TaskView> recommended = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(owner.getId()).stream()
+        TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+        List<TaskView> recommended = taskItemMapper.findByOwnerIdAndListQuery(
+                owner.getId(),
+                queryForAll).stream()
                 .map(this::toView)
                 .sorted(recommendedComparator())
                 .toList();
@@ -73,9 +76,7 @@ public class TaskPlannerService {
     public List<TaskView> listTasks(AppUser owner, TaskListQuery query) {
         List<TaskView> tasks = taskItemMapper.findByOwnerIdAndListQuery(
                 owner.getId(),
-                query.status(),
-                query.category(),
-                query.sort()).stream()
+                query).stream()
                 .map(this::toView)
                 .toList();
 

@@ -11,31 +11,10 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.kanbara.taskcompass.entity.TaskItem;
-import com.kanbara.taskcompass.entity.TaskStatus;
-import com.kanbara.taskcompass.model.TaskSortOption;
+import com.kanbara.taskcompass.query.TaskListQuery;
 
 @Mapper
 public interface TaskItemMapper {
-
-    @Select("""
-            select
-                id,
-                owner_id,
-                title,
-                description,
-                due_date,
-                importance,
-                urgency,
-                estimated_minutes,
-                status,
-                category,
-                created_at,
-                updated_at
-            from tasks
-            where owner_id = #{ownerId}
-            order by updated_at desc
-            """)
-    List<TaskItem> findByOwnerIdOrderByUpdatedAtDesc(Long ownerId);
 
     @Select("""
             <script>
@@ -54,20 +33,20 @@ public interface TaskItemMapper {
                 updated_at
             from tasks
             where owner_id = #{ownerId}
-            <if test="status != null">
-              and status = #{status}
+            <if test="query.status != null">
+              and status = #{query.status}
             </if>
-            <if test="category != null and category != ''">
-              and lower(category) = lower(#{category})
+            <if test="query.category != null and query.category != ''">
+                and lower(category) = lower(#{query.category})
             </if>
             <choose>
-              <when test="sort.slug == 'deadline'">
+              <when test="query.sort.slug == 'deadline'">
                 order by due_date asc, importance desc, urgency desc, updated_at desc
               </when>
-              <when test="sort.slug == 'priority'">
+              <when test="query.sort.slug == 'priority'">
                 order by importance desc, urgency desc, due_date asc, updated_at desc
               </when>
-              <when test="sort.slug == 'updated'">
+              <when test="query.sort.slug == 'updated'">
                 order by updated_at desc
               </when>
               <otherwise>
@@ -78,9 +57,7 @@ public interface TaskItemMapper {
             """)
     List<TaskItem> findByOwnerIdAndListQuery(
             @Param("ownerId") Long ownerId,
-            @Param("status") TaskStatus status,
-            @Param("category") String category,
-            @Param("sort") TaskSortOption sort);
+            @Param("query") TaskListQuery query);
 
     @Select("""
             select

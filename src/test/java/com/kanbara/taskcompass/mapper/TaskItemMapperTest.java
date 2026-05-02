@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kanbara.taskcompass.entity.AppUser;
 import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.entity.TaskStatus;
-import com.kanbara.taskcompass.model.TaskSortOption;
+import com.kanbara.taskcompass.query.TaskListQuery;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -44,9 +44,10 @@ class TaskItemMapperTest {
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
         createTask(otherOwner.getId(), "Other owner", TaskStatus.TODO, "Test",
                 LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
+        TaskListQuery query = TaskListQuery.of("Test", "TODO", "recommended");
 
         List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
-                owner.getId(), TaskStatus.TODO, "test", TaskSortOption.UPDATED);
+                owner.getId(), query);
 
         assertThat(tasks)
                 .extracting(TaskItem::getId)
@@ -60,9 +61,10 @@ class TaskItemMapperTest {
                 LocalDate.now().plusDays(5), 5, 5, LocalDateTime.now());
         TaskItem earlier = createTask(owner.getId(), "Earlier", TaskStatus.TODO, "Test",
                 LocalDate.now().plusDays(1), 1, 1, LocalDateTime.now().minusMinutes(1));
+        TaskListQuery query = TaskListQuery.of("", "TODO", "deadline");
 
         List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
-                owner.getId(), null, "", TaskSortOption.DEADLINE);
+                owner.getId(), query);
 
         assertThat(tasks)
                 .extracting(TaskItem::getId)
@@ -76,9 +78,10 @@ class TaskItemMapperTest {
                 LocalDate.now().plusDays(1), 2, 5, LocalDateTime.now());
         TaskItem highPriority = createTask(owner.getId(), "High priority", TaskStatus.TODO, "Test",
                 LocalDate.now().plusDays(3), 5, 1, LocalDateTime.now().minusMinutes(1));
+        TaskListQuery query = TaskListQuery.of("", "TODO", "priority");
 
         List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
-                owner.getId(), null, "", TaskSortOption.PRIORITY);
+                owner.getId(), query);
 
         assertThat(tasks)
                 .extracting(TaskItem::getId)
@@ -92,9 +95,10 @@ class TaskItemMapperTest {
                 LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusDays(1));
         TaskItem newTask = createTask(owner.getId(), "New", TaskStatus.TODO, "Test",
                 LocalDate.now().plusDays(2), 1, 1, LocalDateTime.now());
+        TaskListQuery query = TaskListQuery.of("", "TODO", "updatedAt");
 
         List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
-                owner.getId(), null, "", TaskSortOption.UPDATED);
+                owner.getId(), query);
 
         assertThat(tasks)
                 .extracting(TaskItem::getId)

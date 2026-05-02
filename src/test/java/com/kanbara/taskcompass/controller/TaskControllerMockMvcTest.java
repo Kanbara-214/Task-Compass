@@ -24,6 +24,8 @@ import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.entity.TaskStatus;
 import com.kanbara.taskcompass.mapper.AppUserMapper;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
+import com.kanbara.taskcompass.model.TaskSortOption;
+import com.kanbara.taskcompass.query.TaskListQuery;
 import com.kanbara.taskcompass.security.AppUserPrincipal;
 
 @SpringBootTest
@@ -151,7 +153,10 @@ class TaskControllerMockMvcTest {
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
 		Long nonexistentTaskId = taskId + 1; // 存在しないID
-		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		int before = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 
 		mockMvc.perform(post("/tasks/" + nonexistentTaskId)
 				.with(user(principal))
@@ -166,7 +171,9 @@ class TaskControllerMockMvcTest {
 				.param("category", "学習"))
 				.andExpect(status().isNotFound());
 
-		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		int after = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 		assertEquals(before, after, "Task should not be updated");
 	}
 
@@ -213,14 +220,19 @@ class TaskControllerMockMvcTest {
 		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user1);
 		Long taskId = createTaskItemForTests(user2.getId());
-		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user2.getId()).size();
+		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		int before = taskItemMapper.findByOwnerIdAndListQuery(
+				user2.getId(),
+				queryForAll).size();
 
 		mockMvc.perform(post("/tasks/" + taskId + "/delete")
 				.with(user(principal))
 				.with(csrf()))
 				.andExpect(status().isNotFound());
 
-		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user2.getId()).size();
+		int after = taskItemMapper.findByOwnerIdAndListQuery(
+				user2.getId(),
+				queryForAll).size();
 		assertEquals(before, after, "Task should not be deleted");
 	}
 
@@ -230,14 +242,19 @@ class TaskControllerMockMvcTest {
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
 		Long nonexistentTaskId = taskId + 1; // 存在しないID
-		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		int before = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 
 		mockMvc.perform(post("/tasks/" + nonexistentTaskId + "/delete")
 				.with(user(principal))
 				.with(csrf()))
 				.andExpect(status().isNotFound());
 
-		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		int after = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 		assertEquals(before, after, "Task should not be deleted");
 	}
 
@@ -245,7 +262,10 @@ class TaskControllerMockMvcTest {
 	void authenticatedUserSubmittingInvalidTaskReturnsCreateFormWithErrors() throws Exception {
 		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
-		int before = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		int before = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 
 		mockMvc.perform(post("/tasks")
 				.with(user(principal))
@@ -264,7 +284,9 @@ class TaskControllerMockMvcTest {
 						"taskForm", "currentUser", "categories", "formTitle", "formAction"))
 				.andExpect(model().attributeHasFieldErrors("taskForm", "title"));
 
-		int after = taskItemMapper.findByOwnerIdOrderByUpdatedAtDesc(user.getId()).size();
+		int after = taskItemMapper.findByOwnerIdAndListQuery(
+				user.getId(),
+				queryForAll).size();
 		assertEquals(before, after, "Task should not be created");
 	}
 
