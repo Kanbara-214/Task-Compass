@@ -114,7 +114,6 @@ Copy-Item .\config\application-example.properties .\config\application.propertie
 
 ## 今後の改善予定
 
-- タスク一覧の絞り込み・並び替えを DB 側で行う
 - 優先度スコアの重みづけを設定可能にする
 - ページネーションを追加する
 - デプロイ環境を用意し、ブラウザから確認できるようにする
