@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.kanbara.taskcompass.entity.TaskItem;
+import com.kanbara.taskcompass.entity.TaskStatus;
+import com.kanbara.taskcompass.model.TaskSortOption;
 
 @Mapper
 public interface TaskItemMapper {
@@ -34,6 +36,51 @@ public interface TaskItemMapper {
             order by updated_at desc
             """)
     List<TaskItem> findByOwnerIdOrderByUpdatedAtDesc(Long ownerId);
+
+    @Select("""
+            <script>
+            select
+                id,
+                owner_id,
+                title,
+                description,
+                due_date,
+                importance,
+                urgency,
+                estimated_minutes,
+                status,
+                category,
+                created_at,
+                updated_at
+            from tasks
+            where owner_id = #{ownerId}
+            <if test="status != null">
+              and status = #{status}
+            </if>
+            <if test="category != null and category != ''">
+              and lower(category) = lower(#{category})
+            </if>
+            <choose>
+              <when test="sort.slug == 'deadline'">
+                order by due_date asc, importance desc, urgency desc, updated_at desc
+              </when>
+              <when test="sort.slug == 'priority'">
+                order by importance desc, urgency desc, due_date asc, updated_at desc
+              </when>
+              <when test="sort.slug == 'updated'">
+                order by updated_at desc
+              </when>
+              <otherwise>
+                order by updated_at desc
+              </otherwise>
+            </choose>
+            </script>
+            """)
+    List<TaskItem> findByOwnerIdAndListQuery(
+            @Param("ownerId") Long ownerId,
+            @Param("status") TaskStatus status,
+            @Param("category") String category,
+            @Param("sort") TaskSortOption sort);
 
     @Select("""
             select
