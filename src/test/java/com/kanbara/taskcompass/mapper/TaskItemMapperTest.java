@@ -1,6 +1,6 @@
 package com.kanbara.taskcompass.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -120,6 +120,73 @@ class TaskItemMapperTest {
 		assertThat(tasks)
 				.extracting(TaskItem::getId)
 				.containsExactly(newTask.getId(), oldTask.getId());
+	}
+
+	@Test
+	void dashboardCountsAggregateByOwnerAndStatus() {
+		AppUser owner = createUser("Alice", "alice-dashboard-count@example.com");
+		AppUser otherOwner = createUser("Jack", "jack-dashboard-count@example.com");
+		createTask(owner.getId(), "Test", TaskStatus.TODO, "Todo",
+				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now());
+		createTask(owner.getId(), "Test", TaskStatus.IN_PROGRESS, "In progress",
+				LocalDate.now().plusDays(2), 4, 4, LocalDateTime.now().minusMinutes(1));
+		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done",
+				LocalDate.now().plusDays(3), 3, 3, LocalDateTime.now().minusMinutes(2));
+		createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
+				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(3));
+
+		assertThat(taskItemMapper.countByOwnerId(owner.getId())).isEqualTo(3);
+		assertThat(taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.DONE)).isEqualTo(1);
+		assertThat(taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.IN_PROGRESS)).isEqualTo(1);
+		assertThat(taskItemMapper.countActiveByOwnerId(owner.getId())).isEqualTo(2);
+		assertThat(taskItemMapper.averageActivePriorityScoreByOwnerId(owner.getId())).isGreaterThan(0);
+	}
+
+	@Test
+	void findRecommendedTopByOwnerIdExcludesDoneAndLimitsResults() {
+		AppUser owner = createUser("Alice", "alice-dashboard-recommended@example.com");
+		TaskItem highScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "High score",
+				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now());
+		TaskItem lowScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low score",
+				LocalDate.now().plusDays(14), 1, 1, LocalDateTime.now().minusMinutes(1));
+		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done",
+				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(2));
+
+		List<TaskItem> tasks = taskItemMapper.findRecommendedTopByOwnerId(owner.getId(), 1);
+
+		assertThat(tasks)
+				.extracting(TaskItem::getId)
+				.containsExactly(highScore.getId());
+		assertThat(tasks)
+				.extracting(TaskItem::getId)
+				.doesNotContain(lowScore.getId());
+	}
+
+	@Test
+	void dashboardDateTopQueriesFilterByDueDateAndStatus() {
+		AppUser owner = createUser("Alice", "alice-dashboard-date@example.com");
+		TaskItem overdue = createTask(owner.getId(), "Test", TaskStatus.TODO, "Overdue",
+				LocalDate.now().minusDays(1), 5, 5, LocalDateTime.now());
+		TaskItem dueThisWeek = createTask(owner.getId(), "Test", TaskStatus.TODO, "Due this week",
+				LocalDate.now().plusDays(1), 4, 4, LocalDateTime.now().minusMinutes(1));
+		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done overdue",
+				LocalDate.now().minusDays(2), 5, 5, LocalDateTime.now().minusMinutes(2));
+		createTask(owner.getId(), "Test", TaskStatus.TODO, "Later",
+				LocalDate.now().plusDays(14), 5, 5, LocalDateTime.now().minusMinutes(3));
+
+		List<TaskItem> overdueTasks = taskItemMapper.findOverdueTopByOwnerId(owner.getId(), 5);
+		List<TaskItem> dueThisWeekTasks = taskItemMapper.findDueBetweenTopByOwnerId(
+				owner.getId(),
+				LocalDate.now(),
+				LocalDate.now().plusDays(7),
+				5);
+
+		assertThat(overdueTasks)
+				.extracting(TaskItem::getId)
+				.containsExactly(overdue.getId());
+		assertThat(dueThisWeekTasks)
+				.extracting(TaskItem::getId)
+				.containsExactly(dueThisWeek.getId());
 	}
 
 	private AppUser createUser(String displayName, String email) {
