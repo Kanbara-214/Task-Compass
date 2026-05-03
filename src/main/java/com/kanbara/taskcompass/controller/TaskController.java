@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kanbara.taskcompass.entity.AppUser;
 import com.kanbara.taskcompass.form.TaskForm;
+import com.kanbara.taskcompass.model.TaskPageView;
 import com.kanbara.taskcompass.query.TaskListQuery;
 import com.kanbara.taskcompass.security.AppUserPrincipal;
 import com.kanbara.taskcompass.service.AppUserService;
@@ -23,6 +24,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
+
+	private static final int TASK_LIST_PAGE_SIZE = 10;
 
 	private final AppUserService appUserService;
 	private final TaskPlannerService taskPlannerService;
@@ -38,13 +41,16 @@ public class TaskController {
 			@RequestParam(required = false) String category,
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String sort,
+			@RequestParam(defaultValue = "1") int page,
 			Model model) {
 		AppUser currentUser = currentUser(principal);
-		TaskListQuery query = TaskListQuery.of(category, status, sort);
+		TaskListQuery query = TaskListQuery.of(category, status, sort, page, TASK_LIST_PAGE_SIZE);
+		TaskPageView taskPage = taskPlannerService.listTaskPage(currentUser, query);
 		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("query", query);
 		model.addAttribute("categories", taskPlannerService.categoryOptions(currentUser));
-		model.addAttribute("tasks", taskPlannerService.listTasks(currentUser, query));
+		model.addAttribute("taskPage", taskPage);
+		model.addAttribute("tasks", taskPage.tasks());
 		return "tasks/list";
 	}
 

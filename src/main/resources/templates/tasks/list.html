@@ -78,6 +78,14 @@
         </section>
 
         <section class="section-card">
+            <div class="section-head compact-head" th:if="${taskPage != null}">
+                <div>
+                    <p class="eyebrow">Page</p>
+                    <h2 th:text="|${taskPage.currentPage} / ${taskPage.totalPages} ページ|">1 / 1 ページ</h2>
+                </div>
+                <p th:text="|全 ${taskPage.totalCount} 件|">全 0 件</p>
+            </div>
+
             <div class="table-wrap" th:if="${!#lists.isEmpty(tasks)}">
                 <table class="task-table">
                     <thead>
@@ -106,7 +114,8 @@
                                     th:text="${task.priority.score}">118</span>
                             </td>
                             <td>
-                                <span class="status-pill" th:classappend="${task.status.cssClass}" th:text="${task.status.label}">進行中</span>
+                                <span class="status-pill" th:classappend="${task.status.cssClass}"
+                                    th:text="${task.status.label}">進行中</span>
                             </td>
                             <td th:text="${task.category}">転職活動</td>
                             <td class="action-cell">
@@ -121,6 +130,19 @@
             <div class="empty-box" th:if="${#lists.isEmpty(tasks)}">
                 条件に合うタスクがありません。新しいタスクを追加してみましょう。
             </div>
+
+            <nav class="filter-actions" th:if="${taskPage != null and taskPage.totalCount > 0}">
+                <a class="secondary-button compact-button"
+                    th:classappend="${!taskPage.hasPrevious()} ? ' disabled' : ''"
+                    th:href="${taskPage.hasPrevious()} ? @{/tasks(category=${query.category},status=${query.status},sort=${query.sort.slug},page=${taskPage.previousPage()})} : '#'">
+                    前へ
+                </a>
+                <span th:text="|${taskPage.currentPage} / ${taskPage.totalPages}|">1 / 1</span>
+                <a class="secondary-button compact-button" th:classappend="${!taskPage.hasNext()} ? ' disabled' : ''"
+                    th:href="${taskPage.hasNext()} ? @{/tasks(category=${query.category},status=${query.status},sort=${query.sort.slug},page=${taskPage.nextPage()})} : '#'">
+                    次へ
+                </a>
+            </nav>
         </section>
     </main>
 </body>
