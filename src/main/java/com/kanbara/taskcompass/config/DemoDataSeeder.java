@@ -15,7 +15,7 @@ import com.kanbara.taskcompass.mapper.AppUserMapper;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 
 @Component
-@Profile("!test")
+@Profile("dev")
 public class DemoDataSeeder implements CommandLineRunner {
 
 	private final AppUserMapper appUserMapper;
