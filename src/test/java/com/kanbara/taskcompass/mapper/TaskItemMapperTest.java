@@ -44,7 +44,7 @@ class TaskItemMapperTest {
 				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
 		createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
 				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
-		TaskListQuery query = TaskListQuery.of("Test", "TODO", "recommended");
+		TaskListQuery query = TaskListQuery.of("Test", "TODO", "recommended", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(), query);
@@ -55,13 +55,30 @@ class TaskItemMapperTest {
 	}
 
 	@Test
+	void findByOwnerIdAndListQuerySortsByRecommendedScore() {
+		AppUser owner = createUser("Alice", "alice-recommended@example.com");
+		TaskItem lowScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low score",
+				LocalDate.now().plusDays(14), 1, 1, LocalDateTime.now());
+		TaskItem highScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "High score",
+				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(1));
+		TaskListQuery query = TaskListQuery.of("", "TODO", "recommended", 1, 10);
+
+		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
+				owner.getId(), query);
+
+		assertThat(tasks)
+				.extracting(TaskItem::getId)
+				.containsExactly(highScore.getId(), lowScore.getId());
+	}
+
+	@Test
 	void findByOwnerIdAndListQuerySortsByDeadline() {
 		AppUser owner = createUser("Alice", "alice-deadline@example.com");
 		TaskItem later = createTask(owner.getId(), "Test", TaskStatus.TODO, "Later",
 				LocalDate.now().plusDays(5), 5, 5, LocalDateTime.now());
 		TaskItem earlier = createTask(owner.getId(), "Test", TaskStatus.TODO, "Earlier",
 				LocalDate.now().plusDays(1), 1, 1, LocalDateTime.now().minusMinutes(1));
-		TaskListQuery query = TaskListQuery.of("", "TODO", "deadline");
+		TaskListQuery query = TaskListQuery.of("", "TODO", "deadline", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(), query);
@@ -78,7 +95,7 @@ class TaskItemMapperTest {
 				LocalDate.now().plusDays(1), 2, 5, LocalDateTime.now());
 		TaskItem highPriority = createTask(owner.getId(), "Test", TaskStatus.TODO, "High priority",
 				LocalDate.now().plusDays(3), 5, 1, LocalDateTime.now().minusMinutes(1));
-		TaskListQuery query = TaskListQuery.of("", "TODO", "priority");
+		TaskListQuery query = TaskListQuery.of("", "TODO", "priority", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(), query);
@@ -95,7 +112,7 @@ class TaskItemMapperTest {
 				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusDays(1));
 		TaskItem newTask = createTask(owner.getId(), "Test", TaskStatus.TODO, "New",
 				LocalDate.now().plusDays(2), 1, 1, LocalDateTime.now());
-		TaskListQuery query = TaskListQuery.of("", "TODO", "updatedAt");
+		TaskListQuery query = TaskListQuery.of("", "TODO", "updated", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(), query);

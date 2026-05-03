@@ -153,7 +153,7 @@ class TaskControllerMockMvcTest {
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
 		Long nonexistentTaskId = taskId + 1; // 存在しないID
-		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		TaskListQuery queryForAll = TaskListQuery.unpaged(TaskSortOption.RECOMMENDED);
 		int before = taskItemMapper.findByOwnerIdAndListQuery(
 				user.getId(),
 				queryForAll).size();
@@ -220,7 +220,7 @@ class TaskControllerMockMvcTest {
 		AppUser user1 = createUser("Alice", "alice@example.com"), user2 = createUser("Jack", "jack@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user1);
 		Long taskId = createTaskItemForTests(user2.getId());
-		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		TaskListQuery queryForAll = TaskListQuery.unpaged(TaskSortOption.RECOMMENDED);
 		int before = taskItemMapper.findByOwnerIdAndListQuery(
 				user2.getId(),
 				queryForAll).size();
@@ -242,7 +242,7 @@ class TaskControllerMockMvcTest {
 		AppUserPrincipal principal = new AppUserPrincipal(user);
 		Long taskId = createTaskItemForTests(user.getId());
 		Long nonexistentTaskId = taskId + 1; // 存在しないID
-		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		TaskListQuery queryForAll = TaskListQuery.unpaged(TaskSortOption.RECOMMENDED);
 		int before = taskItemMapper.findByOwnerIdAndListQuery(
 				user.getId(),
 				queryForAll).size();
@@ -262,7 +262,7 @@ class TaskControllerMockMvcTest {
 	void authenticatedUserSubmittingInvalidTaskReturnsCreateFormWithErrors() throws Exception {
 		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
-		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		TaskListQuery queryForAll = TaskListQuery.unpaged(TaskSortOption.RECOMMENDED);
 		int before = taskItemMapper.findByOwnerIdAndListQuery(
 				user.getId(),
 				queryForAll).size();

@@ -16,6 +16,7 @@ import com.kanbara.taskcompass.form.TaskForm;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 import com.kanbara.taskcompass.model.DashboardView;
 import com.kanbara.taskcompass.model.PriorityInsight;
+import com.kanbara.taskcompass.model.TaskPageView;
 import com.kanbara.taskcompass.model.TaskSortOption;
 import com.kanbara.taskcompass.model.TaskView;
 import com.kanbara.taskcompass.query.TaskListQuery;
@@ -33,7 +34,7 @@ public class TaskPlannerService {
 
 	@Transactional(readOnly = true)
 	public DashboardView buildDashboard(AppUser owner) {
-		TaskListQuery queryForAll = TaskListQuery.all(TaskSortOption.RECOMMENDED);
+		TaskListQuery queryForAll = TaskListQuery.unpaged(TaskSortOption.RECOMMENDED);
 		List<TaskView> recommended = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(),
 				queryForAll).stream()
@@ -76,19 +77,23 @@ public class TaskPlannerService {
 
 	@Transactional(readOnly = true)
 	public List<TaskView> listTasks(AppUser owner, TaskListQuery query) {
+		return taskItemMapper.findByOwnerIdAndListQuery(
+				owner.getId(),
+				query).stream()
+				.map(this::toView)
+				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public TaskPageView listTaskPage(AppUser owner, TaskListQuery query) {
 		List<TaskView> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(),
 				query).stream()
 				.map(this::toView)
 				.toList();
-
-		if (query.sort() == TaskSortOption.RECOMMENDED) {
-			return tasks.stream()
-					.sorted(recommendedComparator())
-					.toList();
-		}
-
-		return tasks;
+		int totalCount = taskItemMapper.countByOwnerIdAndListQuery(owner.getId(), query);
+		int totalPages = Math.max(1, (int) Math.ceil((double) totalCount / query.size()));
+		return new TaskPageView(tasks, query.page(), query.size(), totalCount, totalPages);
 	}
 
 	@Transactional(readOnly = true)
