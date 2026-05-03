@@ -11,58 +11,58 @@ import com.kanbara.taskcompass.entity.AppUser;
 
 public class AppUserPrincipal implements UserDetails {
 
-    private final Long id;
-    private final String displayName;
-    private final String email;
-    private final String passwordHash;
+	private final Long id;
+	private final String displayName;
+	private final String email;
+	private final String passwordHash;
 
-    public AppUserPrincipal(AppUser user) {
-        this.id = user.getId();
-        this.displayName = user.getDisplayName();
-        this.email = user.getEmail();
-        this.passwordHash = user.getPasswordHash();
-    }
+	public AppUserPrincipal(AppUser user) {
+		this.id = user.getId();
+		this.displayName = user.getDisplayName();
+		this.email = user.getEmail();
+		this.passwordHash = user.getPasswordHash();
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getDisplayName() {
-        return displayName;
-    }
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+	}
 
-    @Override
-    public String getPassword() {
-        return passwordHash;
-    }
+	@Override
+	public String getPassword() {
+		return passwordHash;
+	}
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+	@Override
+	public String getUsername() {
+		return email;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

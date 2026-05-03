@@ -13,24 +13,24 @@ import com.kanbara.taskcompass.service.TaskPlannerService;
 @Controller
 public class DashboardController {
 
-    private final AppUserService appUserService;
-    private final TaskPlannerService taskPlannerService;
+	private final AppUserService appUserService;
+	private final TaskPlannerService taskPlannerService;
 
-    public DashboardController(AppUserService appUserService, TaskPlannerService taskPlannerService) {
-        this.appUserService = appUserService;
-        this.taskPlannerService = taskPlannerService;
-    }
+	public DashboardController(AppUserService appUserService, TaskPlannerService taskPlannerService) {
+		this.appUserService = appUserService;
+		this.taskPlannerService = taskPlannerService;
+	}
 
-    @GetMapping("/")
-    public String root() {
-        return "redirect:/dashboard";
-    }
+	@GetMapping("/")
+	public String root() {
+		return "redirect:/dashboard";
+	}
 
-    @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal AppUserPrincipal principal, Model model) {
-        AppUser currentUser = appUserService.requireByEmail(principal.getUsername());
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("dashboard", taskPlannerService.buildDashboard(currentUser));
-        return "dashboard";
-    }
+	@GetMapping("/dashboard")
+	public String dashboard(@AuthenticationPrincipal AppUserPrincipal principal, Model model) {
+		AppUser currentUser = appUserService.requireByEmail(principal.getUsername());
+		model.addAttribute("currentUser", currentUser);
+		model.addAttribute("dashboard", taskPlannerService.buildDashboard(currentUser));
+		return "dashboard";
+	}
 }

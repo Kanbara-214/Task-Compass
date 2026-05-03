@@ -13,16 +13,16 @@ import com.kanbara.taskcompass.security.AppUserPrincipal;
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
-    private final AppUserMapper appUserMapper;
+	private final AppUserMapper appUserMapper;
 
-    public AppUserDetailsService(AppUserMapper appUserMapper) {
-        this.appUserMapper = appUserMapper;
-    }
+	public AppUserDetailsService(AppUserMapper appUserMapper) {
+		this.appUserMapper = appUserMapper;
+	}
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return Optional.ofNullable(appUserMapper.findByEmail(username))
-                .map(AppUserPrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return Optional.ofNullable(appUserMapper.findByEmail(username))
+				.map(AppUserPrincipal::new)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	}
 }
