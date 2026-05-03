@@ -16,9 +16,14 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
     min-height: 100vh;
+    overflow-x: hidden;
     font-family: "IBM Plex Sans JP", sans-serif;
     color: var(--ink);
     background:
@@ -29,6 +34,27 @@ body {
 
 a {
     color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    min-width: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+span,
+strong,
+small,
+a,
+button,
+td,
+th {
+    overflow-wrap: anywhere;
 }
 
 .auth-body {
@@ -87,15 +113,16 @@ h2,
 h3 {
     margin: 0;
     font-family: "Space Grotesk", sans-serif;
-    letter-spacing: -0.04em;
+    letter-spacing: 0;
 }
 
 h1 {
-    font-size: clamp(2.5rem, 5vw, 4.2rem);
+    font-size: 3.6rem;
+    line-height: 1.08;
 }
 
 h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: 2rem;
 }
 
 .hero-text,
@@ -152,6 +179,10 @@ h2 {
     box-shadow: var(--shadow);
 }
 
+.topbar > * {
+    min-width: 0;
+}
+
 .brand {
     font-family: "Space Grotesk", sans-serif;
     font-size: 1.3rem;
@@ -175,6 +206,13 @@ h2 {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.detail-actions,
+.filter-actions,
+.form-actions,
+.task-card-top {
+    flex-wrap: wrap;
 }
 
 .topnav a,
@@ -216,6 +254,16 @@ h2 {
     margin: 24px auto 56px;
     display: grid;
     gap: 22px;
+}
+
+.page-shell > *,
+.section-card > *,
+.panel-card > *,
+.auth-copy > *,
+.hero-panel > *,
+.task-card > *,
+.mini-item > * {
+    min-width: 0;
 }
 
 .dashboard-hero {
@@ -336,6 +384,8 @@ textarea {
     font-weight: 700;
     text-decoration: none;
     cursor: pointer;
+    max-width: 100%;
+    text-align: center;
 }
 
 .primary-button {
@@ -412,6 +462,8 @@ textarea {
     padding: 8px 12px;
     font-size: 0.86rem;
     font-weight: 700;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .priority-pill.small {
@@ -576,11 +628,13 @@ textarea {
 
 .table-wrap {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .task-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 760px;
 }
 
 .task-table th,
@@ -723,6 +777,10 @@ textarea {
 }
 
 @media (max-width: 640px) {
+    body {
+        background: linear-gradient(180deg, #fff9f0 0%, #f6efe7 100%);
+    }
+
     .topbar,
     .page-shell,
     .auth-body {
@@ -733,12 +791,195 @@ textarea {
 
     .topbar {
         margin-top: 12px;
+        padding: 16px;
+        border-radius: 20px;
+        gap: 16px;
     }
 
     .panel-card,
     .auth-copy,
-    .section-card {
-        padding: 22px;
-        border-radius: 22px;
+    .section-card,
+    .hero-panel {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .auth-body {
+        min-height: 100svh;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .auth-shell,
+    .page-shell {
+        gap: 14px;
+    }
+
+    .topnav,
+    .account-box,
+    .detail-actions,
+    .filter-actions,
+    .form-actions {
+        width: 100%;
+    }
+
+    .topnav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .topnav a,
+    .topnav-logout,
+    .nav-button {
+        width: 100%;
+    }
+
+    .topnav a,
+    .nav-button {
+        border: 1px solid rgba(28, 36, 48, 0.1);
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.58);
+        text-align: center;
+    }
+
+    .topnav a.active {
+        background: rgba(21, 122, 116, 0.1);
+    }
+
+    .account-box {
+        justify-content: flex-start;
+    }
+
+    .dashboard-hero {
+        align-items: stretch;
+    }
+
+    .dashboard-hero .primary-button,
+    .section-head .primary-button,
+    .detail-actions .secondary-button,
+    .detail-actions .danger-button,
+    .form-actions .primary-button,
+    .form-actions .secondary-button,
+    .filter-actions .secondary-button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 2.35rem;
+        line-height: 1.12;
+    }
+
+    h2 {
+        line-height: 1.2;
+    }
+
+    .mini-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mini-item-aside {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .task-table,
+    .task-table thead,
+    .task-table tbody,
+    .task-table tr,
+    .task-table th,
+    .task-table td {
+        display: block;
+    }
+
+    .task-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .task-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .task-table tr {
+        padding: 14px;
+        border: 1px solid rgba(28, 36, 48, 0.08);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.82);
+    }
+
+    .task-table tr + tr {
+        margin-top: 12px;
+    }
+
+    .task-table td {
+        display: grid;
+        grid-template-columns: minmax(6.5rem, 34%) minmax(0, 1fr);
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(28, 36, 48, 0.06);
+    }
+
+    .task-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .task-table td::before {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .task-table td:nth-child(1)::before {
+        content: "Task";
+    }
+
+    .task-table td:nth-child(2)::before {
+        content: "Due";
+    }
+
+    .task-table td:nth-child(3)::before {
+        content: "Importance";
+    }
+
+    .task-table td:nth-child(4)::before {
+        content: "Urgency";
+    }
+
+    .task-table td:nth-child(5)::before {
+        content: "Score";
+    }
+
+    .task-table td:nth-child(6)::before {
+        content: "Status";
+    }
+
+    .task-table td:nth-child(7)::before {
+        content: "Category";
+    }
+
+    .task-table td:nth-child(8)::before {
+        content: "Actions";
+    }
+
+    .action-cell {
+        white-space: normal;
+    }
+
+    .action-cell a {
+        display: inline-flex;
+        margin: 0 10px 8px 0;
     }
 }
