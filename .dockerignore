@@ -1,0 +1,13 @@
+.git
+.github
+.settings
+target
+data
+config/application.properties
+.env
+.env.*
+*.log
+*.tmp
+*.temp
+Thumbs.db
+.DS_Store
