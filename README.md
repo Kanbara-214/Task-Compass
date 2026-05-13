@@ -92,15 +92,6 @@ Task Compass は、転職活動・学習・ポートフォリオ制作などの�
 
 [http://localhost:8080/login](http://localhost:8080/login)
 
-デモユーザーとサンプルタスクを自動作成したい場合は、以下のように `dev` プロファイルを有効にして起動します。
-
-```powershell
-.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-- メールアドレス: `demo@example.com`
-- パスワード: `password123`
-
 ## PostgreSQL を使う場合
 
 データを永続化したい場合は、`config/application-example.properties` をコピーして `config/application.properties` を作成します。

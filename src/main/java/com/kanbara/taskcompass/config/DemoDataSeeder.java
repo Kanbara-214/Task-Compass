@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import com.kanbara.taskcompass.mapper.AppUserMapper;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "task-compass.demo-seed.enabled", havingValue = "true")
 public class DemoDataSeeder implements CommandLineRunner {
 
 	private final AppUserMapper appUserMapper;
@@ -33,7 +33,7 @@ public class DemoDataSeeder implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		if (appUserMapper.countUsers() > 0) {
+		if (appUserMapper.findByEmail("demo@example.com") != null) {
 			return;
 		}
 
