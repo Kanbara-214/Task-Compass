@@ -60,11 +60,14 @@ th {
 .auth-body {
     display: grid;
     place-items: center;
+    justify-items: center;
     padding: 24px;
 }
 
 .auth-shell {
-    width: min(1140px, 100%);
+    width: min(1140px, calc(100vw - 48px));
+    margin-inline: auto;
+    justify-self: center;
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
     gap: 24px;
@@ -782,8 +785,7 @@ textarea {
     }
 
     .topbar,
-    .page-shell,
-    .auth-body {
+    .page-shell {
         width: min(100% - 20px, 100%);
         padding-left: 0;
         padding-right: 0;
@@ -805,9 +807,21 @@ textarea {
     }
 
     .auth-body {
+        width: 100%;
         min-height: 100svh;
-        padding-top: 12px;
-        padding-bottom: 12px;
+        padding: 12px 10px;
+        justify-items: center;
+    }
+
+    .auth-shell {
+        width: min(100%, 540px);
+        margin-inline: auto;
+        justify-self: center;
+    }
+
+    .auth-copy,
+    .auth-panel {
+        width: 100%;
     }
 
     .auth-shell,
