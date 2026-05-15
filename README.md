@@ -111,5 +111,4 @@ Copy-Item .\config\application-example.properties .\config\application.propertie
 ## 今後の改善予定
 
 - 優先度スコアの重みづけを設定可能にする
-- MyBatis の SQL を XML Mapper に移し、長い SQL の見通しを改善する
 - 本番運用を想定した独自エラー画面やログ出力を整備する
