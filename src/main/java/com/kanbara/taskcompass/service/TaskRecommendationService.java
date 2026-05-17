@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.kanbara.taskcompass.factory.RecommendationModelFactory;
 import com.kanbara.taskcompass.model.RecommendationCandidate;
 import com.kanbara.taskcompass.model.RecommendationJob;
 import com.kanbara.taskcompass.model.RecommendationResult;
@@ -16,17 +17,14 @@ public class TaskRecommendationService {
 			int availableMinutes) {
 		List<RecommendationJob> undoneJobs = undoneTasks
 				.stream()
-				.map((candidate) -> toRecommendationJob(candidate, now, availableMinutes))
+				.map((candidate) -> RecommendationModelFactory.toRecommendationJob(candidate, now, availableMinutes))
 				.sorted(RecommendationJob::compare)
 				.toList();
 
 		List<RecommendationJob> selectedJobs = selectJobs(undoneJobs, now, availableMinutes);
+		RecommendationResult result = RecommendationModelFactory.buildResult(selectedJobs, undoneJobs, now, availableMinutes);
 
-		return new RecommendationResult(
-				List.of(),
-				availableMinutes,
-				0,
-				"タスクの推薦機能は現在開発中です。しばらくお待ちください。");
+		return result;
 	}
 
 	private List<RecommendationJob> selectJobs(List<RecommendationJob> undoneJobs, LocalDateTime now,
@@ -96,17 +94,6 @@ public class TaskRecommendationService {
 		}
 		
 		return selectedJobs.reversed();
-	}
-	
-	private RecommendationJob toRecommendationJob(
-	        RecommendationCandidate candidate,
-	        LocalDateTime now,
-	        int availableMinutes) {
-	    int processingTime = candidate.estimatedMinutes();
-	    LocalDateTime deadline = candidate.calculateDeadline(now, availableMinutes);
-	    int value = candidate.calculateValue(now, availableMinutes);
-
-	    return new RecommendationJob(candidate, processingTime, deadline, value);
 	}
 	
 }
