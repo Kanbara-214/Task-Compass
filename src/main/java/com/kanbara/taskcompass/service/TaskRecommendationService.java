@@ -10,17 +10,13 @@ import com.kanbara.taskcompass.model.RecommendationResult;
 
 @Service
 public class TaskRecommendationService {
-
-	public RecommendationResult recommendTasks(List<RecommendationCandidate> undoneTasks, LocalDateTime now, int availableTime) {
-		
-		
-
-		RecommendationResult recommendationResult = new RecommendationResult(
-				undoneTasks,
-				availableTime,
+	public RecommendationResult recommendTasks(List<RecommendationCandidate> undoneTasks, LocalDateTime now,
+			int availableMinutes) {
+		return new RecommendationResult(
+				List.of(),
+				availableMinutes,
 				0,
 				"タスクの推薦機能は現在開発中です。しばらくお待ちください。");
-		return recommendationResult;
 	}
 
 }
