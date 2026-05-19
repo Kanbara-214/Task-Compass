@@ -2,6 +2,7 @@ package com.kanbara.taskcompass.factory;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.model.RecommendationCandidate;
@@ -9,6 +10,12 @@ import com.kanbara.taskcompass.model.RecommendationCandidate;
 public final class RecommendationCandidateFactory {
 
 	private RecommendationCandidateFactory() {
+	}
+
+	public static List<RecommendationCandidate> toRecommendationCandidates(List<TaskItem> tasks) {
+		return tasks.stream()
+				.map(RecommendationCandidateFactory::toRecommendationCandidate)
+				.toList();
 	}
 
 	public static RecommendationCandidate toRecommendationCandidate(TaskItem task) {
