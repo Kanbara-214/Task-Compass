@@ -33,6 +33,29 @@ class TaskItemMapperTest {
 	private PasswordEncoder passwordEncoder;
 
 	@Test
+	void findActiveByOwnerIdReturnsOnlyActiveOwnersTasks() {
+		AppUser owner = createUser("Alice", "alice@example.com");
+		AppUser other = createUser("Bob", "bob@example.com");
+		TaskItem todo = createTask(owner.getId(), "Test", TaskStatus.TODO, "Active",
+				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
+		TaskItem inProgress = createTask(owner.getId(), "Test", TaskStatus.IN_PROGRESS, "Active",
+				LocalDate.now().plusDays(1), 3, 3,
+				LocalDateTime.now());
+		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done", LocalDate.now().plusDays(1), 3, 3,
+				LocalDateTime.now());
+		createTask(other.getId(), "Test", TaskStatus.TODO, "Active",
+				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
+		createTask(other.getId(), "Test", TaskStatus.DONE, "Done", LocalDate.now().plusDays(1), 3, 3,
+				LocalDateTime.now());
+
+		List<TaskItem> tasks = taskItemMapper.findActiveByOwnerId(owner.getId());
+
+		assertThat(tasks)
+				.extracting(TaskItem::getId)
+				.containsExactlyInAnyOrder(todo.getId(), inProgress.getId());
+	}
+
+	@Test
 	void findByOwnerIdAndListQueryFiltersByOwnerStatusAndCategory() {
 		AppUser owner = createUser("Alice", "alice-filter@example.com");
 		AppUser otherOwner = createUser("Jack", "jack-filter@example.com");

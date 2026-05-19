@@ -36,6 +36,13 @@
           and status &lt;&gt; 'DONE'
     </select>
 
+    <select id="findActiveByOwnerId" resultType="com.kanbara.taskcompass.entity.TaskItem">
+        select *
+        from tasks
+        where owner_id = #{ownerId}
+          and status &lt;&gt; 'DONE'
+    </select>
+
     <select id="averageActivePriorityScoreByOwnerId" resultType="int">
         select coalesce(round(avg(
             case
