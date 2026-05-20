@@ -9,6 +9,5 @@ public record DashboardView(
 		int openCount,
 		int inProgressCount,
 		int doneCount,
-		int completionRate,
-		int averagePriority) {
+		int completionRate) {
 }

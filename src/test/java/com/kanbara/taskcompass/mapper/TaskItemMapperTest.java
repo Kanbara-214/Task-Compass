@@ -67,7 +67,7 @@ class TaskItemMapperTest {
 				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
 		createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
 				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
-		TaskListQuery query = TaskListQuery.of("Test", "TODO", "recommended", 1, 10);
+		TaskListQuery query = TaskListQuery.of("Test", "TODO", "deadline", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
 				owner.getId(), query);
@@ -75,23 +75,6 @@ class TaskItemMapperTest {
 		assertThat(tasks)
 				.extracting(TaskItem::getId)
 				.containsExactly(expected.getId());
-	}
-
-	@Test
-	void findByOwnerIdAndListQuerySortsByRecommendedScore() {
-		AppUser owner = createUser("Alice", "alice-recommended@example.com");
-		TaskItem lowScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low score",
-				LocalDate.now().plusDays(14), 1, 1, LocalDateTime.now());
-		TaskItem highScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "High score",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(1));
-		TaskListQuery query = TaskListQuery.of("", "TODO", "recommended", 1, 10);
-
-		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
-				owner.getId(), query);
-
-		assertThat(tasks)
-				.extracting(TaskItem::getId)
-				.containsExactly(highScore.getId(), lowScore.getId());
 	}
 
 	@Test
@@ -162,7 +145,6 @@ class TaskItemMapperTest {
 		assertThat(taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.DONE)).isEqualTo(1);
 		assertThat(taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.IN_PROGRESS)).isEqualTo(1);
 		assertThat(taskItemMapper.countActiveByOwnerId(owner.getId())).isEqualTo(2);
-		assertThat(taskItemMapper.averageActivePriorityScoreByOwnerId(owner.getId())).isGreaterThan(0);
 	}
 
 	@Test

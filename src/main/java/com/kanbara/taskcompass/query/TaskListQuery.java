@@ -26,7 +26,7 @@ public record TaskListQuery(
 	}
 
 	public static TaskListQuery unpaged(TaskSortOption sort) {
-		TaskSortOption normalizedSort = sort == null ? TaskSortOption.RECOMMENDED : sort;
+		TaskSortOption normalizedSort = sort == null ? TaskSortOption.DEADLINE : sort;
 		return new TaskListQuery("", null, normalizedSort, null, null);
 	}
 

@@ -58,7 +58,6 @@ public class TaskPlannerService {
 		int inProgressCount = taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.IN_PROGRESS);
 		int openCount = taskItemMapper.countActiveByOwnerId(owner.getId());
 		int completionRate = totalCount == 0 ? 0 : Math.round((doneCount * 100.0f) / totalCount);
-		int averagePriority = taskItemMapper.averageActivePriorityScoreByOwnerId(owner.getId());
 
 		return new DashboardView(
 				recommendationResult,
@@ -67,8 +66,7 @@ public class TaskPlannerService {
 				openCount,
 				inProgressCount,
 				doneCount,
-				completionRate,
-				averagePriority);
+				completionRate);
 	}
 
 	@Transactional(readOnly = true)
