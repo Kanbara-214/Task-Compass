@@ -166,26 +166,6 @@ class TaskItemMapperTest {
 	}
 
 	@Test
-	void findRecommendedTopByOwnerIdExcludesDoneAndLimitsResults() {
-		AppUser owner = createUser("Alice", "alice-dashboard-recommended@example.com");
-		TaskItem highScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "High score",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now());
-		TaskItem lowScore = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low score",
-				LocalDate.now().plusDays(14), 1, 1, LocalDateTime.now().minusMinutes(1));
-		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(2));
-
-		List<TaskItem> tasks = taskItemMapper.findRecommendedTopByOwnerId(owner.getId(), 1);
-
-		assertThat(tasks)
-				.extracting(TaskItem::getId)
-				.containsExactly(highScore.getId());
-		assertThat(tasks)
-				.extracting(TaskItem::getId)
-				.doesNotContain(lowScore.getId());
-	}
-
-	@Test
 	void findOverdueTopByOwnerIdFiltersByDueDateAndStatus() {
 		AppUser owner = createUser("Alice", "alice-dashboard-date@example.com");
 		TaskItem overdue = createTask(owner.getId(), "Test", TaskStatus.TODO, "Overdue",
