@@ -1,6 +1,5 @@
 package com.kanbara.taskcompass.mapper;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -40,12 +39,6 @@ public interface TaskItemMapper {
 
 	List<TaskItem> findOverdueTopByOwnerId(
 			@Param("ownerId") Long ownerId,
-			@Param("limit") int limit);
-
-	List<TaskItem> findDueBetweenTopByOwnerId(
-			@Param("ownerId") Long ownerId,
-			@Param("startDate") LocalDate startDate,
-			@Param("endDate") LocalDate endDate,
 			@Param("limit") int limit);
 
 	TaskItem findByIdAndOwnerId(@Param("taskId") Long taskId, @Param("ownerId") Long ownerId);

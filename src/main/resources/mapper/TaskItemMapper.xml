@@ -228,32 +228,6 @@
         limit #{limit}
     </select>
 
-    <select id="findDueBetweenTopByOwnerId" resultType="com.kanbara.taskcompass.entity.TaskItem">
-        select
-            id,
-            owner_id,
-            title,
-            description,
-            due_date,
-            importance,
-            urgency,
-            estimated_minutes,
-            status,
-            category,
-            created_at,
-            updated_at
-        from tasks
-        where owner_id = #{ownerId}
-          and status &lt;&gt; 'DONE'
-          and due_date &gt;= #{startDate}
-          and due_date &lt;= #{endDate}
-        order by due_date asc,
-                 importance desc,
-                 urgency desc,
-                 updated_at desc
-        limit #{limit}
-    </select>
-
     <select id="findByIdAndOwnerId" resultType="com.kanbara.taskcompass.entity.TaskItem">
         select
             id,
