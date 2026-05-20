@@ -6,7 +6,6 @@ public record DashboardView(
 		RecommendationResult recommendationResult,
 		List<TaskView> todayFocus,
 		List<TaskView> overdueTasks,
-		List<TaskView> dueThisWeek,
 		int totalCount,
 		int openCount,
 		int inProgressCount,

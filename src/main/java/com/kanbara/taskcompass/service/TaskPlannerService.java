@@ -1,9 +1,7 @@
 package com.kanbara.taskcompass.service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -57,12 +55,6 @@ public class TaskPlannerService {
 		List<TaskView> overdueTopTasks = taskItemMapper.findOverdueTopByOwnerId(owner.getId(), 5).stream()
 				.map(this::toView)
 				.toList();
-		LocalDate today = LocalDate.now();
-		LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-		List<TaskView> dueThisWeekTopTasks = taskItemMapper
-				.findDueBetweenTopByOwnerId(owner.getId(), today, endOfWeek, 5).stream()
-				.map(this::toView)
-				.toList();
 
 		int totalCount = taskItemMapper.countByOwnerId(owner.getId());
 		int doneCount = taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.DONE);
@@ -75,7 +67,6 @@ public class TaskPlannerService {
 				recommendationResult,
 				recommendedTasks,
 				overdueTopTasks,
-				dueThisWeekTopTasks,
 				totalCount,
 				openCount,
 				inProgressCount,
