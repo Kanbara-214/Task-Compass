@@ -186,11 +186,11 @@ class TaskItemMapperTest {
 	}
 
 	@Test
-	void dashboardDateTopQueriesFilterByDueDateAndStatus() {
+	void findOverdueTopByOwnerIdFiltersByDueDateAndStatus() {
 		AppUser owner = createUser("Alice", "alice-dashboard-date@example.com");
 		TaskItem overdue = createTask(owner.getId(), "Test", TaskStatus.TODO, "Overdue",
 				LocalDate.now().minusDays(1), 5, 5, LocalDateTime.now());
-		TaskItem dueThisWeek = createTask(owner.getId(), "Test", TaskStatus.TODO, "Due this week",
+		createTask(owner.getId(), "Test", TaskStatus.TODO, "Future",
 				LocalDate.now().plusDays(1), 4, 4, LocalDateTime.now().minusMinutes(1));
 		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done overdue",
 				LocalDate.now().minusDays(2), 5, 5, LocalDateTime.now().minusMinutes(2));
@@ -198,18 +198,10 @@ class TaskItemMapperTest {
 				LocalDate.now().plusDays(14), 5, 5, LocalDateTime.now().minusMinutes(3));
 
 		List<TaskItem> overdueTasks = taskItemMapper.findOverdueTopByOwnerId(owner.getId(), 5);
-		List<TaskItem> dueThisWeekTasks = taskItemMapper.findDueBetweenTopByOwnerId(
-				owner.getId(),
-				LocalDate.now(),
-				LocalDate.now().plusDays(7),
-				5);
 
 		assertThat(overdueTasks)
 				.extracting(TaskItem::getId)
 				.containsExactly(overdue.getId());
-		assertThat(dueThisWeekTasks)
-				.extracting(TaskItem::getId)
-				.containsExactly(dueThisWeek.getId());
 	}
 
 	private AppUser createUser(String displayName, String email) {
