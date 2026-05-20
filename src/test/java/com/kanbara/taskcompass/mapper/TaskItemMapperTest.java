@@ -2,7 +2,6 @@ package com.kanbara.taskcompass.mapper;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,15 +36,15 @@ class TaskItemMapperTest {
 		AppUser owner = createUser("Alice", "alice@example.com");
 		AppUser other = createUser("Bob", "bob@example.com");
 		TaskItem todo = createTask(owner.getId(), "Test", TaskStatus.TODO, "Active",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now());
 		TaskItem inProgress = createTask(owner.getId(), "Test", TaskStatus.IN_PROGRESS, "Active",
-				LocalDate.now().plusDays(1), 3, 3,
+				LocalDateTime.now().plusDays(1), 3, 3,
 				LocalDateTime.now());
-		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done", LocalDate.now().plusDays(1), 3, 3,
+		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done", LocalDateTime.now().plusDays(1), 3, 3,
 				LocalDateTime.now());
 		createTask(other.getId(), "Test", TaskStatus.TODO, "Active",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
-		createTask(other.getId(), "Test", TaskStatus.DONE, "Done", LocalDate.now().plusDays(1), 3, 3,
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now());
+		createTask(other.getId(), "Test", TaskStatus.DONE, "Done", LocalDateTime.now().plusDays(1), 3, 3,
 				LocalDateTime.now());
 
 		List<TaskItem> tasks = taskItemMapper.findActiveByOwnerId(owner.getId());
@@ -60,13 +59,13 @@ class TaskItemMapperTest {
 		AppUser owner = createUser("Alice", "alice-filter@example.com");
 		AppUser otherOwner = createUser("Jack", "jack-filter@example.com");
 		TaskItem expected = createTask(owner.getId(), "Test", TaskStatus.TODO, "Expected",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now());
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now());
 		createTask(owner.getId(), "Test", TaskStatus.DONE, "Different status",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(1));
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(1));
 		createTask(owner.getId(), "Other", TaskStatus.TODO, "Different category",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(2));
 		createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
-				LocalDate.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
+				LocalDateTime.now().plusDays(1), 3, 3, LocalDateTime.now().minusMinutes(3));
 		TaskListQuery query = TaskListQuery.of("Test", "TODO", "deadline", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
@@ -81,9 +80,9 @@ class TaskItemMapperTest {
 	void findByOwnerIdAndListQuerySortsByDeadline() {
 		AppUser owner = createUser("Alice", "alice-deadline@example.com");
 		TaskItem later = createTask(owner.getId(), "Test", TaskStatus.TODO, "Later",
-				LocalDate.now().plusDays(5), 5, 5, LocalDateTime.now());
+				LocalDateTime.now().plusDays(5), 5, 5, LocalDateTime.now());
 		TaskItem earlier = createTask(owner.getId(), "Test", TaskStatus.TODO, "Earlier",
-				LocalDate.now().plusDays(1), 1, 1, LocalDateTime.now().minusMinutes(1));
+				LocalDateTime.now().plusDays(1), 1, 1, LocalDateTime.now().minusMinutes(1));
 		TaskListQuery query = TaskListQuery.of("", "TODO", "deadline", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
@@ -98,9 +97,9 @@ class TaskItemMapperTest {
 	void findByOwnerIdAndListQuerySortsByPriority() {
 		AppUser owner = createUser("Alice", "alice-priority@example.com");
 		TaskItem lowPriority = createTask(owner.getId(), "Test", TaskStatus.TODO, "Low priority",
-				LocalDate.now().plusDays(1), 2, 5, LocalDateTime.now());
+				LocalDateTime.now().plusDays(1), 2, 5, LocalDateTime.now());
 		TaskItem highPriority = createTask(owner.getId(), "Test", TaskStatus.TODO, "High priority",
-				LocalDate.now().plusDays(3), 5, 1, LocalDateTime.now().minusMinutes(1));
+				LocalDateTime.now().plusDays(3), 5, 1, LocalDateTime.now().minusMinutes(1));
 		TaskListQuery query = TaskListQuery.of("", "TODO", "priority", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
@@ -115,9 +114,9 @@ class TaskItemMapperTest {
 	void findByOwnerIdAndListQuerySortsByUpdatedAt() {
 		AppUser owner = createUser("Alice", "alice-updated@example.com");
 		TaskItem oldTask = createTask(owner.getId(), "Test", TaskStatus.TODO, "Old",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusDays(1));
+				LocalDateTime.now().plusDays(1), 5, 5, LocalDateTime.now().minusDays(1));
 		TaskItem newTask = createTask(owner.getId(), "Test", TaskStatus.TODO, "New",
-				LocalDate.now().plusDays(2), 1, 1, LocalDateTime.now());
+				LocalDateTime.now().plusDays(2), 1, 1, LocalDateTime.now());
 		TaskListQuery query = TaskListQuery.of("", "TODO", "updated", 1, 10);
 
 		List<TaskItem> tasks = taskItemMapper.findByOwnerIdAndListQuery(
@@ -133,13 +132,13 @@ class TaskItemMapperTest {
 		AppUser owner = createUser("Alice", "alice-dashboard-count@example.com");
 		AppUser otherOwner = createUser("Jack", "jack-dashboard-count@example.com");
 		createTask(owner.getId(), "Test", TaskStatus.TODO, "Todo",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now());
+				LocalDateTime.now().plusDays(1), 5, 5, LocalDateTime.now());
 		createTask(owner.getId(), "Test", TaskStatus.IN_PROGRESS, "In progress",
-				LocalDate.now().plusDays(2), 4, 4, LocalDateTime.now().minusMinutes(1));
+				LocalDateTime.now().plusDays(2), 4, 4, LocalDateTime.now().minusMinutes(1));
 		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done",
-				LocalDate.now().plusDays(3), 3, 3, LocalDateTime.now().minusMinutes(2));
+				LocalDateTime.now().plusDays(3), 3, 3, LocalDateTime.now().minusMinutes(2));
 		createTask(otherOwner.getId(), "Test", TaskStatus.TODO, "Other owner",
-				LocalDate.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(3));
+				LocalDateTime.now().plusDays(1), 5, 5, LocalDateTime.now().minusMinutes(3));
 
 		assertThat(taskItemMapper.countByOwnerId(owner.getId())).isEqualTo(3);
 		assertThat(taskItemMapper.countByOwnerIdAndStatus(owner.getId(), TaskStatus.DONE)).isEqualTo(1);
@@ -151,19 +150,21 @@ class TaskItemMapperTest {
 	void findOverdueTopByOwnerIdFiltersByDueDateAndStatus() {
 		AppUser owner = createUser("Alice", "alice-dashboard-date@example.com");
 		TaskItem overdue = createTask(owner.getId(), "Test", TaskStatus.TODO, "Overdue",
-				LocalDate.now().minusDays(1), 5, 5, LocalDateTime.now());
+				LocalDateTime.now().minusDays(1), 5, 5, LocalDateTime.now());
+		TaskItem overdueToday = createTask(owner.getId(), "Test", TaskStatus.TODO, "Overdue today",
+				LocalDateTime.now().minusHours(1), 4, 4, LocalDateTime.now().minusMinutes(1));
 		createTask(owner.getId(), "Test", TaskStatus.TODO, "Future",
-				LocalDate.now().plusDays(1), 4, 4, LocalDateTime.now().minusMinutes(1));
+				LocalDateTime.now().plusDays(1), 4, 4, LocalDateTime.now().minusMinutes(1));
 		createTask(owner.getId(), "Test", TaskStatus.DONE, "Done overdue",
-				LocalDate.now().minusDays(2), 5, 5, LocalDateTime.now().minusMinutes(2));
+				LocalDateTime.now().minusDays(2), 5, 5, LocalDateTime.now().minusMinutes(2));
 		createTask(owner.getId(), "Test", TaskStatus.TODO, "Later",
-				LocalDate.now().plusDays(14), 5, 5, LocalDateTime.now().minusMinutes(3));
+				LocalDateTime.now().plusDays(14), 5, 5, LocalDateTime.now().minusMinutes(3));
 
 		List<TaskItem> overdueTasks = taskItemMapper.findOverdueTopByOwnerId(owner.getId(), 5);
 
 		assertThat(overdueTasks)
 				.extracting(TaskItem::getId)
-				.containsExactly(overdue.getId());
+				.containsExactly(overdue.getId(), overdueToday.getId());
 	}
 
 	private AppUser createUser(String displayName, String email) {
@@ -181,7 +182,7 @@ class TaskItemMapperTest {
 			String category,
 			TaskStatus status,
 			String title,
-			LocalDate dueDate,
+			LocalDateTime dueDateTime,
 			int importance,
 			int urgency,
 			LocalDateTime updatedAt) {
@@ -189,7 +190,7 @@ class TaskItemMapperTest {
 		task.setOwnerId(ownerId);
 		task.setTitle(title);
 		task.setDescription(title + " description");
-		task.setDueDate(dueDate);
+		task.setDueDateTime(dueDateTime);
 		task.setImportance(importance);
 		task.setUrgency(urgency);
 		task.setEstimatedMinutes(60);

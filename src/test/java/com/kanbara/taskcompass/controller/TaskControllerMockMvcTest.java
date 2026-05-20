@@ -5,7 +5,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -33,6 +32,8 @@ import com.kanbara.taskcompass.security.AppUserPrincipal;
 @ActiveProfiles("test")
 @Transactional
 class TaskControllerMockMvcTest {
+
+	private static final String VALID_DUE_DATE_TIME = "2026-05-22T09:30";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -134,7 +135,7 @@ class TaskControllerMockMvcTest {
 				.with(csrf())
 				.param("title", "task updated by Alice")
 				.param("description", "validation test")
-				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
 				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
@@ -163,7 +164,7 @@ class TaskControllerMockMvcTest {
 				.with(csrf())
 				.param("title", "task updated by Alice")
 				.param("description", "validation test")
-				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
 				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
@@ -272,7 +273,7 @@ class TaskControllerMockMvcTest {
 				.with(csrf())
 				.param("title", "") // NotBlank違反
 				.param("description", "validation test")
-				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
 				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
@@ -302,7 +303,7 @@ class TaskControllerMockMvcTest {
 				.with(csrf())
 				.param("title", "") // NotBlank違反
 				.param("description", "validation test")
-				.param("dueDate", LocalDate.now().plusDays(1).toString())
+				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
 				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
@@ -335,7 +336,7 @@ class TaskControllerMockMvcTest {
 		task.setOwnerId(ownerId);
 		task.setTitle("Task for tests");
 		task.setDescription("This task is for tests");
-		task.setDueDate(LocalDate.now());
+		task.setDueDateTime(LocalDateTime.now());
 		task.setImportance(1);
 		task.setUrgency(1);
 		task.setEstimatedMinutes(30);

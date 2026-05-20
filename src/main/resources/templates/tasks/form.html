@@ -58,8 +58,8 @@
 
                 <label class="field">
                     <span>締切</span>
-                    <input type="date" th:field="*{dueDate}">
-                    <small class="error-text" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></small>
+                    <input type="datetime-local" th:field="*{dueDateTime}">
+                    <small class="error-text" th:if="${#fields.hasErrors('dueDateTime')}" th:errors="*{dueDateTime}"></small>
                 </label>
 
                 <label class="field">

@@ -1,30 +1,23 @@
 package com.kanbara.taskcompass.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
 import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.entity.TaskStatus;
-import com.kanbara.taskcompass.service.PriorityScoringService;
 
 class PriorityScoringServiceTest {
 
-	private final PriorityScoringService service = new PriorityScoringService();
+	private final PriorityScoringService priorityScoringService = new PriorityScoringService();
 
 	@Test
 	void overdueHighImportanceTaskGetsCriticalPriority() {
-		TaskItem task = new TaskItem();
-		task.setTitle("職務経歴書を更新する");
-		task.setDueDate(LocalDate.of(2026, 4, 10));
-		task.setImportance(5);
-		task.setUrgency(5);
-		task.setEstimatedMinutes(120);
-		task.setStatus(TaskStatus.TODO);
-
-		var insight = service.evaluate(task, LocalDate.of(2026, 4, 11));
+		LocalDateTime now = LocalDateTime.of(2026, 5, 23, 6, 50);
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 22, 6, 50), 5, 5, 120, TaskStatus.TODO);
+		var insight = priorityScoringService.evaluate(task, now);
 
 		assertThat(insight.score()).isGreaterThanOrEqualTo(115);
 		assertThat(insight.overdue()).isTrue();
@@ -32,18 +25,72 @@ class PriorityScoringServiceTest {
 	}
 
 	@Test
-	void doneTaskIsExcludedFromRecommendation() {
-		TaskItem task = new TaskItem();
-		task.setTitle("企業研究をする");
-		task.setDueDate(LocalDate.of(2026, 4, 20));
-		task.setImportance(3);
-		task.setUrgency(2);
-		task.setEstimatedMinutes(60);
-		task.setStatus(TaskStatus.DONE);
+	void sameDayPastDueTaskIsOverdue() {
+		LocalDateTime now = LocalDateTime.of(2026, 5, 21, 18, 0);
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 21, 9, 0), 3, 2, 60, TaskStatus.TODO);
 
-		var insight = service.evaluate(task, LocalDate.of(2026, 4, 11));
+		var insight = priorityScoringService.evaluate(task, now);
+
+		assertThat(insight.overdue()).isTrue();
+		assertThat(insight.dueToday()).isFalse();
+		assertThat(insight.summary()).contains("締切を過ぎ");
+	}
+
+	@Test
+	void futureTaskDueTodayGetsDueTodayPriority() {
+		LocalDateTime now = LocalDateTime.of(2026, 5, 21, 10, 0);
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 21, 18, 0), 5, 1, 60, TaskStatus.TODO);
+
+		var insight = priorityScoringService.evaluate(task, now);
+
+		assertThat(insight.overdue()).isFalse();
+		assertThat(insight.dueToday()).isTrue();
+		assertThat(insight.reasons()).contains("今日が締切");
+	}
+
+	@Test
+	void tomorrowTaskUsesDateBasedTomorrowPriority() {
+		LocalDateTime now = LocalDateTime.of(2026, 5, 21, 23, 30);
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 22, 9, 0), 3, 1, 60, TaskStatus.TODO);
+
+		var insight = priorityScoringService.evaluate(task, now);
+
+		assertThat(insight.reasons()).contains("明日が締切");
+	}
+
+	@Test
+	void dueThisWeekIncludesSundayEndOfDay() {
+		LocalDateTime now = LocalDateTime.of(2026, 5, 21, 18, 0);
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 24, 23, 0), 3, 1, 60, TaskStatus.TODO);
+
+		var insight = priorityScoringService.evaluate(task, now);
+
+		assertThat(insight.dueThisWeek()).isTrue();
+	}
+
+	@Test
+	void doneTaskIsExcludedFromRecommendation() {
+		TaskItem task = createTask(LocalDateTime.of(2026, 5, 21, 6, 50), 3, 2, 60, TaskStatus.DONE);
+
+		var insight = priorityScoringService.evaluate(task, LocalDateTime.of(2026, 5, 21, 6, 50));
 
 		assertThat(insight.score()).isZero();
 		assertThat(insight.bandLabel()).isEqualTo("完了済み");
+	}
+
+	private TaskItem createTask(
+			LocalDateTime dueDateTime,
+			int importance,
+			int urgency,
+			int estimatedMinutes,
+			TaskStatus status) {
+		TaskItem task = new TaskItem();
+		task.setTitle("Test task");
+		task.setDueDateTime(dueDateTime);
+		task.setImportance(importance);
+		task.setUrgency(urgency);
+		task.setEstimatedMinutes(estimatedMinutes);
+		task.setStatus(status);
+		return task;
 	}
 }

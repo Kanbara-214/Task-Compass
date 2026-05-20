@@ -1,6 +1,5 @@
 package com.kanbara.taskcompass.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class TaskPlannerService {
 		TaskForm form = new TaskForm();
 		form.setTitle(task.getTitle());
 		form.setDescription(task.getDescription());
-		form.setDueDate(task.getDueDate());
+		form.setDueDateTime(task.getDueDateTime());
 		form.setImportance(task.getImportance());
 		form.setUrgency(task.getUrgency());
 		form.setEstimatedMinutes(task.getEstimatedMinutes());
@@ -146,7 +145,7 @@ public class TaskPlannerService {
 	private void apply(TaskItem task, TaskForm form) {
 		task.setTitle(form.getTitle().trim());
 		task.setDescription(form.getDescription() == null ? "" : form.getDescription().trim());
-		task.setDueDate(form.getDueDate());
+		task.setDueDateTime(form.getDueDateTime());
 		task.setImportance(form.getImportance());
 		task.setUrgency(form.getUrgency());
 		task.setEstimatedMinutes(form.getEstimatedMinutes());
@@ -163,12 +162,12 @@ public class TaskPlannerService {
 	}
 
 	private TaskView toView(TaskItem task) {
-		PriorityInsight priority = priorityScoringService.evaluate(task, LocalDate.now());
+		PriorityInsight priority = priorityScoringService.evaluate(task, LocalDateTime.now());
 		return new TaskView(
 				task.getId(),
 				task.getTitle(),
 				task.getDescription(),
-				task.getDueDate(),
+				task.getDueDateTime(),
 				task.getImportance(),
 				task.getUrgency(),
 				task.getEstimatedMinutes(),

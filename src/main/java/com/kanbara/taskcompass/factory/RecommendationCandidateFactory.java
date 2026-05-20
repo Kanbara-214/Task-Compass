@@ -1,7 +1,5 @@
 package com.kanbara.taskcompass.factory;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import com.kanbara.taskcompass.entity.TaskItem;
@@ -22,12 +20,8 @@ public final class RecommendationCandidateFactory {
 		return new RecommendationCandidate(
 				task.getId(),
 				task.getTitle(),
-				toDueDateTime(task),
+				task.getDueDateTime(),
 				task.getImportance(),
 				task.getEstimatedMinutes());
-	}
-
-	private static LocalDateTime toDueDateTime(TaskItem task) {
-		return task.getDueDate().atTime(LocalTime.MAX);
 	}
 }

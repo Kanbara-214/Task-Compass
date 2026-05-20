@@ -1,6 +1,5 @@
 package com.kanbara.taskcompass.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TaskItem {
@@ -9,7 +8,7 @@ public class TaskItem {
 	private Long ownerId;
 	private String title;
 	private String description;
-	private LocalDate dueDate;
+	private LocalDateTime dueDateTime;
 	private int importance;
 	private int urgency;
 	private int estimatedMinutes;
@@ -50,12 +49,12 @@ public class TaskItem {
 		this.description = description;
 	}
 
-	public LocalDate getDueDate() {
-		return dueDate;
+	public LocalDateTime getDueDateTime() {
+		return dueDateTime;
 	}
 
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
+	public void setDueDateTime(LocalDateTime dueDateTime) {
+		this.dueDateTime = dueDateTime;
 	}
 
 	public int getImportance() {

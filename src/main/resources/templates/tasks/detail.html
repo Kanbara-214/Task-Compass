@@ -51,7 +51,7 @@
             <div class="detail-grid">
                 <article class="detail-card">
                     <span class="label">締切</span>
-                    <strong th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd')}">2026/04/12</strong>
+                    <strong th:text="${#temporals.format(task.dueDateTime, 'yyyy/MM/dd HH:mm')}">2026/04/12 6:32</strong>
                 </article>
                 <article class="detail-card">
                     <span class="label">重要度 / 緊急度</span>

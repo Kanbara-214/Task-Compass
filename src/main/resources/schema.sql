@@ -13,7 +13,7 @@ create table if not exists tasks (
     owner_id bigint not null,
     title varchar(160) not null,
     description varchar(2000),
-    due_date date not null,
+    due_date_time timestamp not null,
     importance integer not null,
     urgency integer not null,
     estimated_minutes integer not null,
@@ -28,4 +28,4 @@ create table if not exists tasks (
 );
 
 create index if not exists idx_tasks_owner_updated_at on tasks (owner_id, updated_at);
-create index if not exists idx_tasks_owner_due_date on tasks (owner_id, due_date);
+create index if not exists idx_tasks_owner_due_date_time on tasks (owner_id, due_date_time);

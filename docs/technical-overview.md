@@ -123,7 +123,7 @@ DB エンティティをそのまま画面に渡すのではなく、`TaskView`�
 
 `tasks` ではタスク情報を管理し、`owner_id` でユーザーに紐づけています。重要度、緊急度、予想作業時間には DB 側でも CHECK 制約を設けています。
 
-検索・並び替えで使う `owner_id, updated_at` と `owner_id, due_date` にはインデックスを作成しています。
+検索・並び替えで使う `owner_id, updated_at` と `owner_id, due_date_time` にはインデックスを作成しています。
 
 ## テスト方針
 

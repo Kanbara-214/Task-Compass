@@ -6,7 +6,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -65,7 +64,7 @@ class DashboardControllerMockMvcTest {
 				user.getId(),
 				TaskStatus.TODO,
 				"Dashboard recommended task",
-				LocalDate.now().plusDays(1),
+				LocalDateTime.now().plusDays(1),
 				3,
 				30);
 
@@ -95,7 +94,7 @@ class DashboardControllerMockMvcTest {
 				user.getId(),
 				TaskStatus.TODO,
 				"Test Invalid Minutes",
-				LocalDate.now().plusDays(1),
+				LocalDateTime.now().plusDays(1),
 				3,
 				30);
 
@@ -121,7 +120,7 @@ class DashboardControllerMockMvcTest {
 				user.getId(),
 				TaskStatus.TODO,
 				"Test Default Minutes",
-				LocalDate.now().plusDays(1),
+				LocalDateTime.now().plusDays(1),
 				3,
 				30);
 
@@ -158,14 +157,14 @@ class DashboardControllerMockMvcTest {
 			Long ownerId,
 			TaskStatus status,
 			String title,
-			LocalDate dueDate,
+			LocalDateTime dueDateTime,
 			int importance,
 			int estimatedMinutes) {
 		TaskItem task = new TaskItem();
 		task.setOwnerId(ownerId);
 		task.setTitle(title);
 		task.setDescription(title + " description");
-		task.setDueDate(dueDate);
+		task.setDueDateTime(dueDateTime);
 		task.setImportance(importance);
 		task.setUrgency(1);
 		task.setEstimatedMinutes(estimatedMinutes);
