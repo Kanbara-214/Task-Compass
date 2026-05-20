@@ -153,29 +153,6 @@
 					期限切れタスクはありません。
 				</div>
 			</article>
-
-			<article class="section-card">
-				<div class="section-head">
-					<div>
-						<p class="eyebrow">This Week</p>
-						<h2>今週締切のタスク</h2>
-					</div>
-					<span class="count-badge" th:text="${#lists.size(dashboard.dueThisWeek)}">0</span>
-				</div>
-				<div class="mini-list" th:if="${!#lists.isEmpty(dashboard.dueThisWeek)}">
-					<a class="mini-item" th:each="task : ${dashboard.dueThisWeek}"
-						th:href="@{/tasks/{id}(id=${task.id})}">
-						<div>
-							<strong th:text="${task.title}">企業研究をする</strong>
-							<p th:text="${#temporals.format(task.dueDate, 'yyyy/MM/dd') + ' まで'}">2026/04/13 まで</p>
-						</div>
-						<span th:text="${task.priority.bandLabel}">高</span>
-					</a>
-				</div>
-				<div class="empty-box" th:if="${#lists.isEmpty(dashboard.dueThisWeek)}">
-					今週締切のタスクはありません。
-				</div>
-			</article>
 		</section>
 	</main>
 </body>
