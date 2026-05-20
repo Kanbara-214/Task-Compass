@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public enum TaskSortOption {
-    RECOMMENDED("recommended", "おすすめ順"),
     DEADLINE("deadline", "締切順"),
     PRIORITY("priority", "重要度順"),
     UPDATED("updated", "更新順");
@@ -27,13 +26,13 @@ public enum TaskSortOption {
 
     public static TaskSortOption from(String raw) {
         if (raw == null || raw.isBlank()) {
-            return RECOMMENDED;
+            return DEADLINE;
         }
 
         String normalized = raw.trim().toLowerCase(Locale.ROOT);
         return Arrays.stream(values())
                 .filter(option -> option.slug.equals(normalized))
                 .findFirst()
-                .orElse(RECOMMENDED);
+                .orElse(DEADLINE);
     }
 }

@@ -24,8 +24,6 @@ public interface TaskItemMapper {
 
 	int countActiveByOwnerId(Long ownerId);
 
-	int averageActivePriorityScoreByOwnerId(Long ownerId);
-
 	List<TaskItem> findActiveByOwnerId(
 			@Param("ownerId") Long ownerId);
 
