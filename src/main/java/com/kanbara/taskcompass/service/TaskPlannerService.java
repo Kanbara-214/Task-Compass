@@ -13,10 +13,13 @@ import com.kanbara.taskcompass.entity.AppUser;
 import com.kanbara.taskcompass.entity.TaskItem;
 import com.kanbara.taskcompass.entity.TaskStatus;
 import com.kanbara.taskcompass.exception.TaskNotFoundException;
+import com.kanbara.taskcompass.factory.RecommendationCandidateFactory;
 import com.kanbara.taskcompass.form.TaskForm;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 import com.kanbara.taskcompass.model.DashboardView;
 import com.kanbara.taskcompass.model.PriorityInsight;
+import com.kanbara.taskcompass.model.RecommendationCandidate;
+import com.kanbara.taskcompass.model.RecommendationResult;
 import com.kanbara.taskcompass.model.TaskPageView;
 import com.kanbara.taskcompass.model.TaskView;
 import com.kanbara.taskcompass.query.TaskListQuery;
@@ -24,16 +27,29 @@ import com.kanbara.taskcompass.query.TaskListQuery;
 @Service
 public class TaskPlannerService {
 
+	private static final int DEFAULT_AVAILABLE_MINUTES = 60;
+
 	private final TaskItemMapper taskItemMapper;
 	private final PriorityScoringService priorityScoringService;
+	private final TaskRecommendationService taskRecommendationService;
 
-	public TaskPlannerService(TaskItemMapper taskItemMapper, PriorityScoringService priorityScoringService) {
+	public TaskPlannerService(TaskItemMapper taskItemMapper, PriorityScoringService priorityScoringService,
+			TaskRecommendationService taskRecommendationService) {
 		this.taskItemMapper = taskItemMapper;
 		this.priorityScoringService = priorityScoringService;
+		this.taskRecommendationService = taskRecommendationService;
 	}
 
 	@Transactional(readOnly = true)
 	public DashboardView buildDashboard(AppUser owner) {
+		List<TaskItem> activeTasks = taskItemMapper.findActiveByOwnerId(owner.getId());
+		List<RecommendationCandidate> candidates = RecommendationCandidateFactory
+				.toRecommendationCandidates(activeTasks);
+		LocalDateTime now = LocalDateTime.now();
+		RecommendationResult recommendationResult = taskRecommendationService.recommendTasks(
+				candidates,
+				now,
+				DEFAULT_AVAILABLE_MINUTES);
 		List<TaskView> recommendedTasks = taskItemMapper.findRecommendedTopByOwnerId(owner.getId(), 3).stream()
 				.map(this::toView)
 				.toList();
@@ -55,6 +71,7 @@ public class TaskPlannerService {
 		int averagePriority = taskItemMapper.averageActivePriorityScoreByOwnerId(owner.getId());
 
 		return new DashboardView(
+				recommendationResult,
 				recommendedTasks,
 				overdueTopTasks,
 				dueThisWeekTopTasks,
