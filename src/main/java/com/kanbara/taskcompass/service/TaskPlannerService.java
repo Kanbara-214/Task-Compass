@@ -49,9 +49,6 @@ public class TaskPlannerService {
 				candidates,
 				now,
 				normalizedAvailableMinutes);
-		List<TaskView> recommendedTasks = taskItemMapper.findRecommendedTopByOwnerId(owner.getId(), 3).stream()
-				.map(this::toView)
-				.toList();
 		List<TaskView> overdueTopTasks = taskItemMapper.findOverdueTopByOwnerId(owner.getId(), 5).stream()
 				.map(this::toView)
 				.toList();
@@ -65,7 +62,6 @@ public class TaskPlannerService {
 
 		return new DashboardView(
 				recommendationResult,
-				recommendedTasks,
 				overdueTopTasks,
 				totalCount,
 				openCount,
