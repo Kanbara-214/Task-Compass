@@ -1,6 +1,5 @@
 package com.kanbara.taskcompass.config;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.boot.CommandLineRunner;
@@ -44,15 +43,15 @@ public class DemoDataSeeder implements CommandLineRunner {
 		demoUser.setCreatedAt(LocalDateTime.now());
 		appUserMapper.insert(demoUser);
 
-		seedTask(task(demoUser.getId(), "職務経歴書を更新する", "最新の実績を反映し、応募先に合わせて表現を調整する", LocalDate.now().plusDays(1), 5, 5,
+		seedTask(task(demoUser.getId(), "職務経歴書を更新する", "最新の実績を反映し、応募先に合わせて表現を調整する", LocalDateTime.now().plusDays(1), 5, 5,
 				90, TaskStatus.IN_PROGRESS, "転職活動"));
-		seedTask(task(demoUser.getId(), "ポートフォリオのAPIを作る", "ログイン機能とCRUDに優先度計算APIを追加する", LocalDate.now().plusDays(4), 5,
+		seedTask(task(demoUser.getId(), "ポートフォリオのAPIを作る", "ログイン機能とCRUDに優先度計算APIを追加する", LocalDateTime.now().plusDays(4), 5,
 				4, 180, TaskStatus.TODO, "ポートフォリオ"));
-		seedTask(task(demoUser.getId(), "Javaの復習をする", "設計、例外、コレクション周りを復習する", LocalDate.now().plusDays(6), 4, 3, 120,
+		seedTask(task(demoUser.getId(), "Javaの復習をする", "設計、例外、コレクション周りを復習する", LocalDateTime.now().plusDays(6), 4, 3, 120,
 				TaskStatus.TODO, "学習"));
-		seedTask(task(demoUser.getId(), "企業研究をする", "志望動機と逆質問に備えて事業内容を整理する", LocalDate.now().plusDays(2), 4, 4, 60,
+		seedTask(task(demoUser.getId(), "企業研究をする", "志望動機と逆質問に備えて事業内容を整理する", LocalDateTime.now().plusDays(2), 4, 4, 60,
 				TaskStatus.TODO, "転職活動"));
-		seedTask(task(demoUser.getId(), "面談用の質問を整理する", "聞きたい内容を箇条書きにして優先順位を決める", LocalDate.now().minusDays(1), 5, 4, 45,
+		seedTask(task(demoUser.getId(), "面談用の質問を整理する", "聞きたい内容を箇条書きにして優先順位を決める", LocalDateTime.now().minusDays(1), 5, 4, 45,
 				TaskStatus.TODO, "面談"));
 	}
 
@@ -60,7 +59,7 @@ public class DemoDataSeeder implements CommandLineRunner {
 			Long ownerId,
 			String title,
 			String description,
-			LocalDate dueDate,
+			LocalDateTime dueDateTime,
 			int importance,
 			int urgency,
 			int estimatedMinutes,
@@ -71,7 +70,7 @@ public class DemoDataSeeder implements CommandLineRunner {
 		task.setOwnerId(ownerId);
 		task.setTitle(title);
 		task.setDescription(description);
-		task.setDueDate(dueDate);
+		task.setDueDateTime(dueDateTime);
 		task.setImportance(importance);
 		task.setUrgency(urgency);
 		task.setEstimatedMinutes(estimatedMinutes);

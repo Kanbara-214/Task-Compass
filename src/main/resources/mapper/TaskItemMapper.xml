@@ -49,7 +49,7 @@
             owner_id,
             title,
             description,
-            due_date,
+            due_date_time,
             importance,
             urgency,
             estimated_minutes,
@@ -67,16 +67,16 @@
         </if>
         <choose>
             <when test="query.sort.slug == 'deadline'">
-                order by due_date asc, importance desc, urgency desc, updated_at desc
+                order by due_date_time asc, importance desc, urgency desc, updated_at desc
             </when>
             <when test="query.sort.slug == 'priority'">
-                order by importance desc, urgency desc, due_date asc, updated_at desc
+                order by importance desc, urgency desc, due_date_time asc, updated_at desc
             </when>
             <when test="query.sort.slug == 'updated'">
                 order by updated_at desc
             </when>
             <otherwise>
-                order by due_date asc,
+                order by due_date_time asc,
                          importance desc,
                          urgency desc,
                          updated_at desc
@@ -94,7 +94,7 @@
             owner_id,
             title,
             description,
-            due_date,
+            due_date_time,
             importance,
             urgency,
             estimated_minutes,
@@ -105,8 +105,8 @@
         from tasks
         where owner_id = #{ownerId}
           and status &lt;&gt; 'DONE'
-          and due_date &lt; current_date
-        order by due_date asc,
+          and due_date_time &lt; current_timestamp
+        order by due_date_time asc,
                  importance desc,
                  urgency desc,
                  updated_at desc
@@ -119,7 +119,7 @@
             owner_id,
             title,
             description,
-            due_date,
+            due_date_time,
             importance,
             urgency,
             estimated_minutes,
@@ -146,7 +146,7 @@
             owner_id,
             title,
             description,
-            due_date,
+            due_date_time,
             importance,
             urgency,
             estimated_minutes,
@@ -158,7 +158,7 @@
             #{ownerId},
             #{title},
             #{description},
-            #{dueDate},
+            #{dueDateTime},
             #{importance},
             #{urgency},
             #{estimatedMinutes},
@@ -173,7 +173,7 @@
         update tasks
         set title = #{title},
             description = #{description},
-            due_date = #{dueDate},
+            due_date_time = #{dueDateTime},
             importance = #{importance},
             urgency = #{urgency},
             estimated_minutes = #{estimatedMinutes},

@@ -2,6 +2,8 @@ package com.kanbara.taskcompass.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import com.kanbara.taskcompass.model.PriorityInsight;
 @Service
 public class PriorityScoringService {
 
-	public PriorityInsight evaluate(TaskItem task, LocalDate today) {
+	public PriorityInsight evaluate(TaskItem task, LocalDateTime now) {
 		if (task.getStatus() == TaskStatus.DONE) {
 			return new PriorityInsight(
 					0,
@@ -31,20 +33,23 @@ public class PriorityScoringService {
 
 		int score = 0;
 		List<String> reasons = new ArrayList<>();
-		long daysUntilDue = ChronoUnit.DAYS.between(today, task.getDueDate());
+		LocalDate today = now.toLocalDate();
+		LocalDate dueDate = task.getDueDateTime().toLocalDate();
+		long daysUntilDue = ChronoUnit.DAYS.between(today, dueDate);
 
 		int importancePoints = task.getImportance() * 12;
 		int urgencyPoints = task.getUrgency() * 9;
 		score += importancePoints + urgencyPoints;
 		reasons.add("重要度 " + task.getImportance() + " と緊急度 " + task.getUrgency() + " を反映");
 
-		boolean overdue = daysUntilDue < 0;
-		boolean dueToday = daysUntilDue == 0;
-		LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-		boolean dueThisWeek = !task.getDueDate().isBefore(today) && !task.getDueDate().isAfter(endOfWeek);
+		boolean overdue = task.getDueDateTime().isBefore(now);
+		boolean dueToday = !overdue && daysUntilDue == 0;
+		LocalDateTime endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).atTime(LocalTime.MAX);
+		boolean dueThisWeek = !task.getDueDateTime().isBefore(now) && !task.getDueDateTime().isAfter(endOfWeek);
 
 		if (overdue) {
-			int overduePoints = 55 + (int) Math.min(20, Math.abs(daysUntilDue) * 5);
+			long overdueDays = Math.max(1, ChronoUnit.DAYS.between(dueDate, today));
+			int overduePoints = 55 + (int) Math.min(20, overdueDays * 5);
 			score += overduePoints;
 			reasons.add("締切超過のため強く優先");
 		} else if (dueToday) {

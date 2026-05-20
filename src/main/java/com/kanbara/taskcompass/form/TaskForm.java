@@ -1,6 +1,8 @@
 package com.kanbara.taskcompass.form;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,7 +22,8 @@ public class TaskForm {
 	private String description;
 
 	@NotNull(message = "締切を入力してください")
-	private LocalDate dueDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime dueDateTime;
 
 	@NotNull(message = "重要度を選択してください")
 	@Min(value = 1, message = "重要度は1以上で入力してください")
@@ -64,12 +67,12 @@ public class TaskForm {
 		this.description = description;
 	}
 
-	public LocalDate getDueDate() {
-		return dueDate;
+	public LocalDateTime getDueDateTime() {
+		return dueDateTime;
 	}
 
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
+	public void setDueDateTime(LocalDateTime dueDateTime) {
+		this.dueDateTime = dueDateTime;
 	}
 
 	public Integer getImportance() {
