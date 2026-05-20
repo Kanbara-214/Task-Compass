@@ -41,15 +41,16 @@ public class TaskPlannerService {
 	}
 
 	@Transactional(readOnly = true)
-	public DashboardView buildDashboard(AppUser owner) {
+	public DashboardView buildDashboard(AppUser owner, Integer availableMinutes) {
 		List<TaskItem> activeTasks = taskItemMapper.findActiveByOwnerId(owner.getId());
 		List<RecommendationCandidate> candidates = RecommendationCandidateFactory
 				.toRecommendationCandidates(activeTasks);
 		LocalDateTime now = LocalDateTime.now();
+		int normalizedAvailableMinutes = normalizeAvailableMinutes(availableMinutes);
 		RecommendationResult recommendationResult = taskRecommendationService.recommendTasks(
 				candidates,
 				now,
-				DEFAULT_AVAILABLE_MINUTES);
+				normalizedAvailableMinutes);
 		List<TaskView> recommendedTasks = taskItemMapper.findRecommendedTopByOwnerId(owner.getId(), 3).stream()
 				.map(this::toView)
 				.toList();
@@ -204,5 +205,20 @@ public class TaskPlannerService {
 			return hours + "時間";
 		}
 		return hours + "時間" + remainingMinutes + "分";
+	}
+
+	private int normalizeAvailableMinutes(Integer availableMinutes) {
+		boolean isNull = availableMinutes == null;
+		if (isNull) {
+			return DEFAULT_AVAILABLE_MINUTES;
+		}
+
+		boolean isTooSmall = availableMinutes < 15;
+		boolean isNotMultipleOf15 = availableMinutes % 15 != 0;
+		boolean isTooBig = 720 < availableMinutes;
+		if (isTooSmall || isNotMultipleOf15 || isTooBig) {
+			return DEFAULT_AVAILABLE_MINUTES;
+		}
+		return availableMinutes;
 	}
 }
