@@ -33,10 +33,6 @@ public interface TaskItemMapper {
 			@Param("ownerId") Long ownerId,
 			@Param("query") TaskListQuery query);
 
-	List<TaskItem> findRecommendedTopByOwnerId(
-			@Param("ownerId") Long ownerId,
-			@Param("limit") int limit);
-
 	List<TaskItem> findOverdueTopByOwnerId(
 			@Param("ownerId") Long ownerId,
 			@Param("limit") int limit);
