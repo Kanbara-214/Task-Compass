@@ -4,6 +4,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kanbara.taskcompass.entity.AppUser;
 import com.kanbara.taskcompass.security.AppUserPrincipal;
@@ -27,10 +28,11 @@ public class DashboardController {
 	}
 
 	@GetMapping("/dashboard")
-	public String dashboard(@AuthenticationPrincipal AppUserPrincipal principal, Model model) {
+	public String dashboard(@AuthenticationPrincipal AppUserPrincipal principal,
+			@RequestParam(value = "availableMinutes", required = false) Integer availableMinutes, Model model) {
 		AppUser currentUser = appUserService.requireByEmail(principal.getUsername());
 		model.addAttribute("currentUser", currentUser);
-		model.addAttribute("dashboard", taskPlannerService.buildDashboard(currentUser));
+		model.addAttribute("dashboard", taskPlannerService.buildDashboard(currentUser, availableMinutes));
 		return "dashboard";
 	}
 }
