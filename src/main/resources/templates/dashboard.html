@@ -72,16 +72,23 @@
 				<a th:href="@{/tasks}" class="text-link">一覧を見る</a>
 			</div>
 
-			<form method="get" th:action="@{/dashboard#focus}">
+			<form method="get" th:action="@{/dashboard#focus}" class="recommendation-form">
 				<label for="availableMinutes">作業可能時間</label>
 				<select id="availableMinutes" name="availableMinutes" onchange="this.form.submit()">
-					<option value="30" th:selected="${dashboard.recommendationResult.availableMinutes == 30}">30分</option>
-					<option value="45" th:selected="${dashboard.recommendationResult.availableMinutes == 45}">45分</option>
-					<option value="60" th:selected="${dashboard.recommendationResult.availableMinutes == 60}">60分</option>
-					<option value="90" th:selected="${dashboard.recommendationResult.availableMinutes == 90}">90分</option>
-					<option value="120" th:selected="${dashboard.recommendationResult.availableMinutes == 120}">120分</option>
-					<option value="180" th:selected="${dashboard.recommendationResult.availableMinutes == 180}">180分</option>
-					<option value="240" th:selected="${dashboard.recommendationResult.availableMinutes == 240}">240分</option>
+					<option value="30" th:selected="${dashboard.recommendationResult.availableMinutes == 30}">30分
+					</option>
+					<option value="45" th:selected="${dashboard.recommendationResult.availableMinutes == 45}">45分
+					</option>
+					<option value="60" th:selected="${dashboard.recommendationResult.availableMinutes == 60}">60分
+					</option>
+					<option value="90" th:selected="${dashboard.recommendationResult.availableMinutes == 90}">90分
+					</option>
+					<option value="120" th:selected="${dashboard.recommendationResult.availableMinutes == 120}">120分
+					</option>
+					<option value="180" th:selected="${dashboard.recommendationResult.availableMinutes == 180}">180分
+					</option>
+					<option value="240" th:selected="${dashboard.recommendationResult.availableMinutes == 240}">240分
+					</option>
 				</select>
 			</form>
 
@@ -122,7 +129,7 @@
 			</div>
 		</section>
 
-		<section class="split-grid">
+		<section class="split-grid dashboard-single-column">
 			<article class="section-card">
 				<div class="section-head">
 					<div>
@@ -131,6 +138,7 @@
 					</div>
 					<span class="count-badge" th:text="${#lists.size(dashboard.overdueTasks)}">0</span>
 				</div>
+
 				<div class="mini-list overdue-list" th:if="${!#lists.isEmpty(dashboard.overdueTasks)}">
 					<a class="mini-item overdue-item" th:each="task : ${dashboard.overdueTasks}"
 						th:href="@{/tasks/{id}(id=${task.id})}">
@@ -144,6 +152,7 @@
 						</div>
 					</a>
 				</div>
+
 				<div class="empty-box" th:if="${#lists.isEmpty(dashboard.overdueTasks)}">
 					期限切れタスクはありません。
 				</div>
