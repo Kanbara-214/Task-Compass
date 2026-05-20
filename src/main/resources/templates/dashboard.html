@@ -90,27 +90,40 @@
 				</select>
 			</form>
 
-			<div class="task-grid" th:if="${!#lists.isEmpty(dashboard.todayFocus)}">
-				<article class="task-card focus" th:each="task : ${dashboard.todayFocus}">
+			<div class="meta-row">
+				<span th:text="${dashboard.recommendationResult.summary}">
+					2件のタスクを合計45分で推薦しました。
+				</span>
+				<span th:text="${'作業可能時間: ' + dashboard.recommendationResult.availableMinutes + '分'}">
+					作業可能時間: 60分
+				</span>
+				<span th:text="${'未選択の期限切れタスク: ' + dashboard.recommendationResult.remainingExpiredTaskCount + '件'}">
+					未選択の期限切れタスク: 0件
+				</span>
+			</div>
+
+			<div class="task-grid" th:if="${!#lists.isEmpty(dashboard.recommendationResult.recommendedTasks)}">
+				<article class="task-card focus"
+					th:each="recommendedTask, stat : ${dashboard.recommendationResult.recommendedTasks}">
 					<div class="task-card-top">
-						<span class="priority-pill" th:classappend="${task.priority.bandClass}"
-							th:text="${task.priority.bandLabel + ' / ' + task.priority.score}">最優先 / 118</span>
-						<span class="status-pill" th:classappend="${task.status.cssClass}"
-							th:text="${task.status.label}">進行中</span>
+						<span class="priority-pill" th:text="${'実行順 ' + stat.count}">実行順 1</span>
 					</div>
-					<h3 th:text="${task.title}">職務経歴書を更新する</h3>
-					<p class="task-copy" th:text="${task.priority.summary}"></p>
+					<h3 th:text="${recommendedTask.candidate.title}">職務経歴書を更新する</h3>
+					<p class="task-copy" th:text="${recommendedTask.reason}">
+						推薦理由
+					</p>
 					<div class="meta-row">
-						<span th:text="${'締切: ' + #temporals.format(task.dueDate, 'yyyy/MM/dd')}">締切</span>
-						<span th:text="${'作業時間: ' + task.estimatedLabel}">1時間30分</span>
-						<span th:text="${'カテゴリ: ' + task.category}">転職活動</span>
+						<span th:text="${'作業時間: ' + recommendedTask.candidate.estimatedMinutes + '分'}">
+							作業時間: 60分
+						</span>
 					</div>
-					<a class="card-link" th:href="@{/tasks/{id}(id=${task.id})}">詳細を見る</a>
+					<a class="card-link" th:href="@{/tasks/{id}(id=${recommendedTask.candidate.id})}">詳細を見る</a>
 				</article>
 			</div>
 
-			<div class="empty-box" th:if="${#lists.isEmpty(dashboard.todayFocus)}">
-				まだタスクがありません。最初のタスクを追加してみましょう。
+			<div class="empty-box" th:if="${#lists.isEmpty(dashboard.recommendationResult.recommendedTasks)}"
+				th:text="${dashboard.recommendationResult.summary}">
+				今回の作業時間内で完了できる推薦タスクはありません。
 			</div>
 		</section>
 
