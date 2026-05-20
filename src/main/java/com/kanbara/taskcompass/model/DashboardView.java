@@ -4,7 +4,6 @@ import java.util.List;
 
 public record DashboardView(
 		RecommendationResult recommendationResult,
-		List<TaskView> todayFocus,
 		List<TaskView> overdueTasks,
 		int totalCount,
 		int openCount,
