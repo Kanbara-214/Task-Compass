@@ -58,7 +58,7 @@ H2 はローカル起動の手軽さを優先して採用し、PostgreSQL は本
 
 この変更は、推薦ロジック、デモデータ、フォーム、一覧・詳細画面、Mapper、テストに影響するため、単にカラム名を変えるだけでは済みませんでした。
 
-そのため、推薦ロジックの仕様を `priority-scoring.md` に整理したうえで、`TaskRecommendationService`、画面表示、Mapper、テストを同じPR内で追従させました。さらにその後の整理として、旧スコアリング関連の `PriorityScoringService` や `PriorityInsight`、`urgency` を削除し、現在の推薦ロジック中心の構成に揃えました。
+そのため、推薦ロジックの仕様を `recommendation-logic.md` に整理したうえで、`TaskRecommendationService`、画面表示、Mapper、テストを同じPR内で追従させました。さらにその後の整理として、旧スコアリング関連の `PriorityScoringService` や `PriorityInsight`、`urgency` を削除し、現在の推薦ロジック中心の構成に揃えました。
 
 ## 捨てた選択肢
 
