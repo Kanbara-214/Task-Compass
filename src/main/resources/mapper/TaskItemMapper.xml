@@ -190,4 +190,9 @@
           and owner_id = #{ownerId}
     </delete>
 
+    <delete id="deleteByOwnerId">
+        delete from tasks
+        where owner_id = #{ownerId}
+    </delete>
+
 </mapper>
