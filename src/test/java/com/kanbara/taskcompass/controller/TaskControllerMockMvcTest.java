@@ -1,5 +1,6 @@
 package com.kanbara.taskcompass.controller;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,12 +65,14 @@ class TaskControllerMockMvcTest {
 	void authenticatedUserCanAccessTaskList() throws Exception {
 		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
+		createTaskItemForTests(user.getId());
 
 		mockMvc.perform(get("/tasks")
 				.with(user(principal)))
 				.andExpect(status().isOk())
 				.andExpect(view().name("tasks/list"))
-				.andExpect(model().attributeExists("currentUser", "query", "categories", "tasks"));
+				.andExpect(model().attributeExists("currentUser", "query", "categories", "tasks"))
+				.andExpect(content().string(containsString("30\u5206")));
 	}
 
 	@Test

@@ -93,6 +93,7 @@
                             <th>タスク名</th>
                             <th>締切</th>
                             <th>重要度</th>
+                            <th>見積もり時間</th>
                             <th>ステータス</th>
                             <th>カテゴリ</th>
                             <th>操作</th>
@@ -105,6 +106,7 @@
                             </td>
                             <td th:text="${#temporals.format(task.dueDateTime, 'yyyy/MM/dd HH:mm')}">2026/04/12 6:32</td>
                             <td th:text="${task.importance}">5</td>
+                            <td th:text="${task.estimatedLabel}">30分</td>
                             <td>
                                 <span class="status-pill" th:classappend="${task.status.cssClass}"
                                     th:text="${task.status.label}">進行中</span>

@@ -990,14 +990,18 @@ textarea {
 	}
 
 	.task-table td:nth-child(4)::before {
-		content: "Status";
+		content: "Estimate";
 	}
 
 	.task-table td:nth-child(5)::before {
-		content: "Category";
+		content: "Status";
 	}
 
 	.task-table td:nth-child(6)::before {
+		content: "Category";
+	}
+
+	.task-table td:nth-child(7)::before {
 		content: "Actions";
 	}
 
