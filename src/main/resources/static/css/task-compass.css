@@ -606,6 +606,55 @@ textarea {
 	font-size: 0.9rem;
 }
 
+.recommendation-table {
+	display: grid;
+	gap: 10px;
+	margin-top: 16px;
+}
+
+.recommendation-header,
+.recommendation-item {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 104px 80px 64px 74px;
+	align-items: center;
+	gap: 14px;
+}
+
+.recommendation-header {
+	padding: 0 16px;
+	color: var(--muted);
+	font-size: 0.78rem;
+	font-weight: 700;
+}
+
+.recommendation-header span:not(:first-child) {
+	text-align: center;
+}
+
+.recommendation-list {
+	gap: 10px;
+}
+
+.recommendation-item {
+	background:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 245, 232, 0.94)),
+		rgba(255, 255, 255, 0.86);
+}
+
+.recommendation-main .task-card-top {
+	margin-bottom: 10px;
+}
+
+.recommendation-value,
+.recommendation-link {
+	align-self: center;
+	text-align: center;
+}
+
+.recommendation-deadline {
+	white-space: nowrap;
+}
+
 .mini-item-aside {
 	display: flex;
 	flex-direction: column;
@@ -689,7 +738,7 @@ textarea {
 }
 
 .detail-shell {
-	grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
 }
 
@@ -913,6 +962,34 @@ textarea {
 	.mini-item {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+
+	.recommendation-header {
+		grid-template-columns: 5.9rem 4.5rem 3.2rem;
+		padding: 0 16px;
+	}
+
+	.recommendation-header span:first-child,
+	.recommendation-header span:last-child {
+		display: none;
+	}
+
+	.recommendation-item {
+		grid-template-columns: 5.9rem 4.5rem 3.2rem;
+	}
+
+	.recommendation-main,
+	.recommendation-link {
+		grid-column: 1 / -1;
+	}
+
+	.recommendation-value,
+	.recommendation-link {
+		text-align: left;
+	}
+
+	.recommendation-link {
+		justify-self: start;
 	}
 
 	.mini-item-aside {

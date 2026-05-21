@@ -71,13 +71,13 @@ public class DemoDataSeeder implements CommandLineRunner {
 				now.minusHours(4), 5, 30, TaskStatus.TODO, "面談", now);
 		seedTask(ownerId, "期限切れ: ポートフォリオのスクリーンショットを差し替える", "期限切れですが作業時間がやや長く、他タスクとの組み合わせで選択が変わります。",
 				now.minusDays(2), 2, 45, TaskStatus.TODO, "ポートフォリオ", now);
-		seedTask(ownerId, "30分後: 応募前チェックリストを確認する", "締切時刻ちょうどに完了できるケースを確認しやすいタスクです。",
+		seedTask(ownerId, "応募前チェックリストを確認する", "締切時刻ちょうどに完了できるケースを確認しやすいタスクです。",
 				now.plusMinutes(30), 5, 30, TaskStatus.TODO, "転職活動", now);
-		seedTask(ownerId, "45分後: 面接URLと提出資料を確認する", "15分で完了できる締切間近のタスクです。",
+		seedTask(ownerId, "面接URLと提出資料を確認する", "15分で完了できる締切間近のタスクです。",
 				now.plusMinutes(45), 4, 15, TaskStatus.TODO, "面談", now);
-		seedTask(ownerId, "90分後: コードレビュー指摘へ返信する", "進行中タスクです。IN_PROGRESSでも追加加点せず、未完了タスクとして扱う確認に使えます。",
+		seedTask(ownerId, "コードレビュー指摘へ返信する", "進行中タスクです。IN_PROGRESSでも追加加点せず、未完了タスクとして扱う確認に使えます。",
 				now.plusMinutes(90), 5, 60, TaskStatus.IN_PROGRESS, "ポートフォリオ", now);
-		seedTask(ownerId, "2時間後: 企業研究メモを面接用に整理する", "作業時間を120分に広げたときに入りやすい中時間タスクです。",
+		seedTask(ownerId, "企業研究メモを面接用に整理する", "作業時間を120分に広げたときに入りやすい中時間タスクです。",
 				now.plusHours(2), 3, 45, TaskStatus.TODO, "転職活動", now);
 
 		seedTask(ownerId, "認可まわりの統合テストを書く", "長めですが重要度が高く、90分以上の作業時間で選択候補になります。",

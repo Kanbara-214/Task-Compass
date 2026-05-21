@@ -104,23 +104,38 @@
 				</span>
 			</div>
 
-			<div class="task-grid" th:if="${!#lists.isEmpty(dashboard.recommendationResult.recommendedTasks)}">
-				<article class="task-card focus"
-					th:each="recommendedTask, stat : ${dashboard.recommendationResult.recommendedTasks}">
-					<div class="task-card-top">
-						<span class="priority-pill" th:text="${'実行順 ' + stat.count}">実行順 1</span>
-					</div>
-					<h3 th:text="${recommendedTask.candidate.title}">職務経歴書を更新する</h3>
-					<p class="task-copy" th:text="${recommendedTask.reason}">
-						推薦理由
-					</p>
-					<div class="meta-row">
-						<span th:text="${'作業時間: ' + recommendedTask.candidate.estimatedMinutes + '分'}">
-							作業時間: 60分
-						</span>
-					</div>
-					<a class="card-link" th:href="@{/tasks/{id}(id=${recommendedTask.candidate.id})}">詳細を見る</a>
-				</article>
+			<div class="recommendation-table" th:if="${!#lists.isEmpty(dashboard.recommendationResult.recommendedTasks)}">
+				<div class="recommendation-header" aria-hidden="true">
+					<span>タスク</span>
+					<span>締切</span>
+					<span>作業時間</span>
+					<span>重要度</span>
+					<span></span>
+				</div>
+				<div class="mini-list recommendation-list">
+					<a class="mini-item recommendation-item"
+						th:each="recommendedTask, stat : ${dashboard.recommendationResult.recommendedTasks}"
+						th:href="@{/tasks/{id}(id=${recommendedTask.candidate.id})}">
+						<div class="recommendation-main">
+							<div class="task-card-top">
+								<span class="priority-pill" th:text="${'実行順 ' + stat.count}">実行順 1</span>
+							</div>
+							<strong th:text="${recommendedTask.candidate.title}">職務経歴書を更新する</strong>
+							<p class="task-copy" th:text="${recommendedTask.reason}">
+								推薦理由
+							</p>
+						</div>
+						<strong class="recommendation-value recommendation-deadline"
+							th:text="${#temporals.format(recommendedTask.candidate.dueDateTime, 'MM/dd HH:mm')}">
+							04/12 06:32
+						</strong>
+						<strong class="recommendation-value"
+							th:text="${recommendedTask.candidate.estimatedMinutes + '分'}">60分</strong>
+						<strong class="recommendation-value"
+							th:text="${recommendedTask.candidate.importance}">5</strong>
+						<span class="mini-item-hint recommendation-link">詳細を見る</span>
+					</a>
+				</div>
 			</div>
 
 			<div class="empty-box" th:if="${#lists.isEmpty(dashboard.recommendationResult.recommendedTasks)}"
