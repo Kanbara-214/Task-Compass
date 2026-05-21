@@ -144,10 +144,8 @@
 						th:href="@{/tasks/{id}(id=${task.id})}">
 						<div>
 							<strong th:text="${task.title}">模擬面接の準備をする</strong>
-							<p th:text="${task.priority.summary}">締切を過ぎているため最優先です。</p>
 						</div>
 						<div class="mini-item-aside">
-							<span class="count-badge overdue-score" th:text="${task.priority.score}">120</span>
 							<span class="mini-item-hint">詳細を見る</span>
 						</div>
 					</a>

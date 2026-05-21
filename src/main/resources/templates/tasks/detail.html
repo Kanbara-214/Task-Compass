@@ -75,27 +75,6 @@
                 </article>
             </div>
         </section>
-
-        <section class="section-card priority-panel">
-            <div class="section-head align-start">
-                <div>
-                    <p class="eyebrow">Priority Insight</p>
-                    <h2>優先度が高い理由</h2>
-                </div>
-                <span class="priority-pill" th:classappend="${task.priority.bandClass}"
-                    th:text="${task.priority.bandLabel + ' / ' + task.priority.score}">最優先 / 118</span>
-            </div>
-
-            <p class="priority-summary" th:text="${task.priority.summary}">
-                締切が近く、重要度が高いため上位表示されています。
-            </p>
-
-            <div class="reason-list vertical">
-                <div class="reason-chip" th:each="reason : ${task.priority.reasons}" th:text="${reason}">
-                    締切が近い
-                </div>
-            </div>
-        </section>
     </main>
 </body>
 

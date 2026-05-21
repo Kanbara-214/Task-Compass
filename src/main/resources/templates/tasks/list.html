@@ -17,7 +17,7 @@
     <header class="topbar">
         <div class="brand-block">
             <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
-            <p>タスクを一覧で確認しておすすめ順に見直す</p>
+            <p>タスクを一覧で確認し直す</p>
         </div>
         <nav class="topnav">
             <a th:href="@{/dashboard}">ダッシュボード</a>
@@ -93,8 +93,6 @@
                             <th>タスク名</th>
                             <th>締切</th>
                             <th>重要度</th>
-                            <th>緊急度</th>
-                            <th>優先度スコア</th>
                             <th>ステータス</th>
                             <th>カテゴリ</th>
                             <th>操作</th>
@@ -104,15 +102,9 @@
                         <tr th:each="task : ${tasks}">
                             <td>
                                 <strong th:text="${task.title}">職務経歴書を更新する</strong>
-                                <p th:text="${task.priority.summary}">締切が近く重要度も高いため上位です。</p>
                             </td>
                             <td th:text="${#temporals.format(task.dueDateTime, 'yyyy/MM/dd HH:mm')}">2026/04/12 6:32</td>
                             <td th:text="${task.importance}">5</td>
-                            <td th:text="${task.urgency}">5</td>
-                            <td>
-                                <span class="priority-pill small" th:classappend="${task.priority.bandClass}"
-                                    th:text="${task.priority.score}">118</span>
-                            </td>
                             <td>
                                 <span class="status-pill" th:classappend="${task.status.cssClass}"
                                     th:text="${task.status.label}">進行中</span>
