@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +136,30 @@ class DashboardControllerMockMvcTest {
 		DashboardView dashboard = dashboardFrom(result);
 
 		assertThat(dashboard.recommendationResult().availableMinutes()).isEqualTo(60);
+	}
+
+	@Test
+	void dashboardDisplaysFactBasedInfoForOverdueTasks() throws Exception {
+		AppUser user = createUser("Alice", "alice-dashboard-overdue@example.com");
+		AppUserPrincipal principal = new AppUserPrincipal(user);
+		LocalDateTime dueDateTime = LocalDateTime.now().minusDays(1);
+		TaskItem overdueTask = createTask(
+				user.getId(),
+				TaskStatus.TODO,
+				"Overdue fact task",
+				dueDateTime,
+				4,
+				45);
+
+		mockMvc.perform(get("/dashboard")
+				.with(user(principal)))
+				.andExpect(status().isOk())
+				.andExpect(view().name("dashboard"))
+				.andExpect(content().string(containsString(overdueTask.getTitle())))
+				.andExpect(content().string(containsString("締切: "
+						+ dueDateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))))
+				.andExpect(content().string(containsString("重要度: 4")))
+				.andExpect(content().string(containsString("見積もり: 45分")));
 	}
 
 	private DashboardView dashboardFrom(MvcResult result) {
