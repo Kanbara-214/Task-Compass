@@ -17,7 +17,7 @@
     <header class="topbar">
         <div class="brand-block">
             <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
-            <p>タスクを登録して優先度計算に載せる</p>
+            <p>タスクを登録して推薦候補に載せる</p>
         </div>
         <nav class="topnav">
             <a th:href="@{/dashboard}">ダッシュボード</a>
@@ -38,7 +38,7 @@
                 <div>
                     <p class="eyebrow">Task Editor</p>
                     <h1 th:text="${formTitle}">タスクを追加</h1>
-                    <p class="section-copy">締切、重要度、緊急度、作業時間を登録すると優先度スコアが計算されます。</p>
+                    <p class="section-copy">締切、重要度、作業時間を登録すると推薦タスク候補になります。</p>
                 </div>
             </div>
 
@@ -78,15 +78,6 @@
                             th:text="${point + ' / 5'}"></option>
                     </select>
                     <small class="error-text" th:if="${#fields.hasErrors('importance')}" th:errors="*{importance}"></small>
-                </label>
-
-                <label class="field">
-                    <span>緊急度</span>
-                    <select th:field="*{urgency}">
-                        <option th:each="point : ${#numbers.sequence(1,5)}" th:value="${point}"
-                            th:text="${point + ' / 5'}"></option>
-                    </select>
-                    <small class="error-text" th:if="${#fields.hasErrors('urgency')}" th:errors="*{urgency}"></small>
                 </label>
 
                 <label class="field">

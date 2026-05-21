@@ -14,7 +14,6 @@ import com.kanbara.taskcompass.factory.RecommendationCandidateFactory;
 import com.kanbara.taskcompass.form.TaskForm;
 import com.kanbara.taskcompass.mapper.TaskItemMapper;
 import com.kanbara.taskcompass.model.DashboardView;
-import com.kanbara.taskcompass.model.PriorityInsight;
 import com.kanbara.taskcompass.model.RecommendationCandidate;
 import com.kanbara.taskcompass.model.RecommendationResult;
 import com.kanbara.taskcompass.model.TaskPageView;
@@ -27,13 +26,11 @@ public class TaskPlannerService {
 	private static final int DEFAULT_AVAILABLE_MINUTES = 60;
 
 	private final TaskItemMapper taskItemMapper;
-	private final PriorityScoringService priorityScoringService;
 	private final TaskRecommendationService taskRecommendationService;
 
-	public TaskPlannerService(TaskItemMapper taskItemMapper, PriorityScoringService priorityScoringService,
+	public TaskPlannerService(TaskItemMapper taskItemMapper,
 			TaskRecommendationService taskRecommendationService) {
 		this.taskItemMapper = taskItemMapper;
-		this.priorityScoringService = priorityScoringService;
 		this.taskRecommendationService = taskRecommendationService;
 	}
 
@@ -103,7 +100,6 @@ public class TaskPlannerService {
 		form.setDescription(task.getDescription());
 		form.setDueDateTime(task.getDueDateTime());
 		form.setImportance(task.getImportance());
-		form.setUrgency(task.getUrgency());
 		form.setEstimatedMinutes(task.getEstimatedMinutes());
 		form.setStatus(task.getStatus());
 		form.setCategory(task.getCategory());
@@ -147,7 +143,6 @@ public class TaskPlannerService {
 		task.setDescription(form.getDescription() == null ? "" : form.getDescription().trim());
 		task.setDueDateTime(form.getDueDateTime());
 		task.setImportance(form.getImportance());
-		task.setUrgency(form.getUrgency());
 		task.setEstimatedMinutes(form.getEstimatedMinutes());
 		task.setStatus(form.getStatus());
 		task.setCategory(form.getCategory().trim());
@@ -162,21 +157,18 @@ public class TaskPlannerService {
 	}
 
 	private TaskView toView(TaskItem task) {
-		PriorityInsight priority = priorityScoringService.evaluate(task, LocalDateTime.now());
 		return new TaskView(
 				task.getId(),
 				task.getTitle(),
 				task.getDescription(),
 				task.getDueDateTime(),
 				task.getImportance(),
-				task.getUrgency(),
 				task.getEstimatedMinutes(),
 				formatMinutes(task.getEstimatedMinutes()),
 				task.getStatus(),
 				task.getCategory(),
 				task.getCreatedAt(),
-				task.getUpdatedAt(),
-				priority);
+				task.getUpdatedAt());
 	}
 
 	private String formatMinutes(int minutes) {

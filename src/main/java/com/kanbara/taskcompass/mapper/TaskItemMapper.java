@@ -44,4 +44,6 @@ public interface TaskItemMapper {
 	int update(TaskItem task);
 
 	int deleteByIdAndOwnerId(@Param("taskId") Long taskId, @Param("ownerId") Long ownerId);
+
+	int deleteByOwnerId(Long ownerId);
 }

@@ -144,10 +144,12 @@
 						th:href="@{/tasks/{id}(id=${task.id})}">
 						<div>
 							<strong th:text="${task.title}">模擬面接の準備をする</strong>
-							<p th:text="${task.priority.summary}">締切を過ぎているため最優先です。</p>
+							<p
+								th:text="|締切: ${#temporals.format(task.dueDateTime, 'yyyy/MM/dd HH:mm')} / 重要度: ${task.importance} / 見積もり: ${task.estimatedLabel}|">
+								締切: 2026/04/12 06:32 / 重要度: 5 / 見積もり: 30分
+							</p>
 						</div>
 						<div class="mini-item-aside">
-							<span class="count-badge overdue-score" th:text="${task.priority.score}">120</span>
 							<span class="mini-item-hint">詳細を見る</span>
 						</div>
 					</a>

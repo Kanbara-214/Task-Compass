@@ -10,7 +10,6 @@ public class TaskItem {
 	private String description;
 	private LocalDateTime dueDateTime;
 	private int importance;
-	private int urgency;
 	private int estimatedMinutes;
 	private TaskStatus status;
 	private String category;
@@ -63,14 +62,6 @@ public class TaskItem {
 
 	public void setImportance(int importance) {
 		this.importance = importance;
-	}
-
-	public int getUrgency() {
-		return urgency;
-	}
-
-	public void setUrgency(int urgency) {
-		this.urgency = urgency;
 	}
 
 	public int getEstimatedMinutes() {

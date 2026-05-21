@@ -1,5 +1,6 @@
 package com.kanbara.taskcompass.controller;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,12 +65,14 @@ class TaskControllerMockMvcTest {
 	void authenticatedUserCanAccessTaskList() throws Exception {
 		AppUser user = createUser("Alice", "alice@example.com");
 		AppUserPrincipal principal = new AppUserPrincipal(user);
+		createTaskItemForTests(user.getId());
 
 		mockMvc.perform(get("/tasks")
 				.with(user(principal)))
 				.andExpect(status().isOk())
 				.andExpect(view().name("tasks/list"))
-				.andExpect(model().attributeExists("currentUser", "query", "categories", "tasks"));
+				.andExpect(model().attributeExists("currentUser", "query", "categories", "tasks"))
+				.andExpect(content().string(containsString("30\u5206")));
 	}
 
 	@Test
@@ -137,7 +140,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -166,7 +168,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -275,7 +276,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -305,7 +305,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -338,7 +337,6 @@ class TaskControllerMockMvcTest {
 		task.setDescription("This task is for tests");
 		task.setDueDateTime(LocalDateTime.now());
 		task.setImportance(1);
-		task.setUrgency(1);
 		task.setEstimatedMinutes(30);
 		task.setStatus(TaskStatus.IN_PROGRESS);
 		task.setCategory("Test");
