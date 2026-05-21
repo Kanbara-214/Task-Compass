@@ -44,25 +44,6 @@ public class RecommendationCandidateFactoryTest {
 				.containsExactly(todo.getId(), inProgress.getId(), done.getId());
 	}
 
-	@Test
-	void toRecommendationCandidatesDoesNotUseUrgency() {
-		LocalDateTime dateTime = LocalDateTime.of(2026, 5, 25, 6, 44);
-		TaskItem lowUrgency = createTask(1L, "Test", dateTime, 3, 60);
-		lowUrgency.setUrgency(1);
-
-		TaskItem highUrgency = createTask(1L, "Test", dateTime, 3, 60);
-		highUrgency.setUrgency(5);
-
-		RecommendationCandidate lowUrgencyCandidate = RecommendationCandidateFactory
-				.toRecommendationCandidates(List.of(lowUrgency))
-				.get(0);
-		RecommendationCandidate highUrgencyCandidate = RecommendationCandidateFactory
-				.toRecommendationCandidates(List.of(highUrgency))
-				.get(0);
-
-		assertThat(highUrgencyCandidate).isEqualTo(lowUrgencyCandidate);
-	}
-
 	private TaskItem createTask(
 			Long id,
 			String title,
@@ -76,7 +57,6 @@ public class RecommendationCandidateFactoryTest {
 		task.setDescription(title + " description");
 		task.setDueDateTime(dueDateTime);
 		task.setImportance(importance);
-		task.setUrgency(1);
 		task.setEstimatedMinutes(estimatedMinutes);
 		task.setStatus(TaskStatus.TODO);
 		task.setCategory("Test");

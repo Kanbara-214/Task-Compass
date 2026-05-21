@@ -137,7 +137,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -166,7 +165,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -275,7 +273,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -305,7 +302,6 @@ class TaskControllerMockMvcTest {
 				.param("description", "validation test")
 				.param("dueDateTime", VALID_DUE_DATE_TIME)
 				.param("importance", "3")
-				.param("urgency", "3")
 				.param("estimatedMinutes", "60")
 				.param("status", "TODO")
 				.param("category", "学習"))
@@ -338,7 +334,6 @@ class TaskControllerMockMvcTest {
 		task.setDescription("This task is for tests");
 		task.setDueDateTime(LocalDateTime.now());
 		task.setImportance(1);
-		task.setUrgency(1);
 		task.setEstimatedMinutes(30);
 		task.setStatus(TaskStatus.IN_PROGRESS);
 		task.setCategory("Test");

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import com.kanbara.taskcompass.entity.TaskStatus;
 
-public record TaskView(Long id, String title, String description, LocalDateTime dueDateTime, int importance,
-		int urgency, int estimatedMinutes, String estimatedLabel, TaskStatus status, String category,
+public record TaskView(Long id, String title, String description, LocalDateTime dueDateTime,
+		int importance, int estimatedMinutes, String estimatedLabel, TaskStatus status, String category,
 		LocalDateTime createdAt, LocalDateTime updatedAt) {
 
 	public boolean isDone() {

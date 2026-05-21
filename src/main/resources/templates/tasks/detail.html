@@ -17,7 +17,7 @@
     <header class="topbar">
         <div class="brand-block">
             <a class="brand" th:href="@{/dashboard}" th:text="${appName}">Task Compass</a>
-            <p>タスクの全情報と優先理由を確認する</p>
+            <p>タスクの登録内容を確認する</p>
         </div>
         <nav class="topnav">
             <a th:href="@{/dashboard}">ダッシュボード</a>
@@ -54,8 +54,8 @@
                     <strong th:text="${#temporals.format(task.dueDateTime, 'yyyy/MM/dd HH:mm')}">2026/04/12 6:32</strong>
                 </article>
                 <article class="detail-card">
-                    <span class="label">重要度 / 緊急度</span>
-                    <strong th:text="${task.importance + ' / ' + task.urgency}">5 / 5</strong>
+                    <span class="label">重要度</span>
+                    <strong th:text="${task.importance}">5</strong>
                 </article>
                 <article class="detail-card">
                     <span class="label">予想作業時間</span>

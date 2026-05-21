@@ -166,7 +166,6 @@ class DashboardControllerMockMvcTest {
 		task.setDescription(title + " description");
 		task.setDueDateTime(dueDateTime);
 		task.setImportance(importance);
-		task.setUrgency(1);
 		task.setEstimatedMinutes(estimatedMinutes);
 		task.setStatus(status);
 		task.setCategory("Test");

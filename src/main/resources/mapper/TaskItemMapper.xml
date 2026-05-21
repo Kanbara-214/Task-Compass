@@ -51,7 +51,6 @@
             description,
             due_date_time,
             importance,
-            urgency,
             estimated_minutes,
             status,
             category,
@@ -67,10 +66,10 @@
         </if>
         <choose>
             <when test="query.sort.slug == 'deadline'">
-                order by due_date_time asc, importance desc, urgency desc, updated_at desc
+                order by due_date_time asc, importance desc, updated_at desc
             </when>
             <when test="query.sort.slug == 'priority'">
-                order by importance desc, urgency desc, due_date_time asc, updated_at desc
+                order by importance desc, due_date_time asc, updated_at desc
             </when>
             <when test="query.sort.slug == 'updated'">
                 order by updated_at desc
@@ -78,7 +77,6 @@
             <otherwise>
                 order by due_date_time asc,
                          importance desc,
-                         urgency desc,
                          updated_at desc
             </otherwise>
         </choose>
@@ -96,7 +94,6 @@
             description,
             due_date_time,
             importance,
-            urgency,
             estimated_minutes,
             status,
             category,
@@ -108,7 +105,6 @@
           and due_date_time &lt; current_timestamp
         order by due_date_time asc,
                  importance desc,
-                 urgency desc,
                  updated_at desc
         limit #{limit}
     </select>
@@ -121,7 +117,6 @@
             description,
             due_date_time,
             importance,
-            urgency,
             estimated_minutes,
             status,
             category,
@@ -148,7 +143,6 @@
             description,
             due_date_time,
             importance,
-            urgency,
             estimated_minutes,
             status,
             category,
@@ -160,7 +154,6 @@
             #{description},
             #{dueDateTime},
             #{importance},
-            #{urgency},
             #{estimatedMinutes},
             #{status},
             #{category},
@@ -175,7 +168,6 @@
             description = #{description},
             due_date_time = #{dueDateTime},
             importance = #{importance},
-            urgency = #{urgency},
             estimated_minutes = #{estimatedMinutes},
             status = #{status},
             category = #{category},

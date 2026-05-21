@@ -100,7 +100,6 @@ public class TaskPlannerService {
 		form.setDescription(task.getDescription());
 		form.setDueDateTime(task.getDueDateTime());
 		form.setImportance(task.getImportance());
-		form.setUrgency(task.getUrgency());
 		form.setEstimatedMinutes(task.getEstimatedMinutes());
 		form.setStatus(task.getStatus());
 		form.setCategory(task.getCategory());
@@ -144,7 +143,6 @@ public class TaskPlannerService {
 		task.setDescription(form.getDescription() == null ? "" : form.getDescription().trim());
 		task.setDueDateTime(form.getDueDateTime());
 		task.setImportance(form.getImportance());
-		task.setUrgency(form.getUrgency());
 		task.setEstimatedMinutes(form.getEstimatedMinutes());
 		task.setStatus(form.getStatus());
 		task.setCategory(form.getCategory().trim());
@@ -165,7 +163,6 @@ public class TaskPlannerService {
 				task.getDescription(),
 				task.getDueDateTime(),
 				task.getImportance(),
-				task.getUrgency(),
 				task.getEstimatedMinutes(),
 				formatMinutes(task.getEstimatedMinutes()),
 				task.getStatus(),
